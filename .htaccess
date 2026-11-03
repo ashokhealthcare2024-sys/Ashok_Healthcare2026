@@ -33,6 +33,14 @@ Options -Indexes -MultiViews
 
   # 4C. The canonical homepage URL is /index.html, not the directory alias.
   RewriteRule ^$ https://ashokhealthcare.in/index.html [L,R=301]
+
+  # 4D. Fix legacy homepage aliases that were indexed by older crawlers or CMS URLs.
+  RewriteRule ^Home/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
+  RewriteRule ^Home/index/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
+  RewriteRule ^Home/index\.html$ https://ashokhealthcare.in/index.html [R=301,L,NC]
+  RewriteRule ^home/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
+  RewriteRule ^home/index/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
+  RewriteRule ^home/index\.html$ https://ashokhealthcare.in/index.html [R=301,L,NC]
 </IfModule>
 
 # 5. SEO ROUTING & LEGACY REQUEST HANDLING
