@@ -41,6 +41,11 @@ Options -Indexes -MultiViews
   RewriteRule ^home/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
   RewriteRule ^home/index/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
   RewriteRule ^home/index\.html$ https://ashokhealthcare.in/index.html [R=301,L,NC]
+
+  # 4E. Fix legacy about page aliases and keep the canonical URL stable.
+  RewriteRule ^about/?$ https://ashokhealthcare.in/about-us.html [R=301,L,NC]
+  RewriteRule ^about\.html$ https://ashokhealthcare.in/about-us.html [R=301,L,NC]
+  RewriteRule ^about-us/?$ https://ashokhealthcare.in/about-us.html [R=301,L,NC]
 </IfModule>
 
 # 5. SEO ROUTING & LEGACY REQUEST HANDLING
