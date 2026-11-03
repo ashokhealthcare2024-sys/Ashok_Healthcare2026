@@ -13,24 +13,6 @@ Static, responsive website for Ashok Healthcare. It uses HTML, CSS, and vanilla 
 - `sitemap.xml` and `rss.xml` — search-engine sitemap and feed
 - `validate_sitemap.py` — sitemap and canonical-route validation
 
-## Run locally
-
-From the project directory, start Python's static file server:
-
-```powershell
-python -m http.server 8080
-```
-
-Open `http://localhost:8080` in a browser. The website has no npm build step.
-
-## Validate the sitemap
-
-```powershell
-python validate_sitemap.py
-```
-
-The validator checks sitemap XML, canonical URLs, robots.txt, and that sitemap routes map to local pages.
-
 ## Deployment
 
 The site can be served as static files. For cPanel deployment, review `.cpanel.yml` and set `DEPLOYPATH` to the intended web root before deploying.
