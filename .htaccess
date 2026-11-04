@@ -31,6 +31,8 @@ Options -Indexes -MultiViews
   RewriteRule ^ https://ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
 
   # 4C. Root stays on the live homepage, with no redirect loop or /index.html bounce.
+  RewriteCond %{THE_REQUEST} \s/+index\.html(?:\?.*)?\s [NC]
+  RewriteRule ^index\.html$ / [R=301,L,NE]
 
   # 4D. Fix legacy homepage aliases that were indexed by older crawlers or CMS URLs.
   RewriteRule ^Home/?$ / [R=301,L,NC]
