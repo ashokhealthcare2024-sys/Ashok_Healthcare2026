@@ -30,8 +30,7 @@ Options -Indexes -MultiViews
   RewriteCond %{HTTPS} !=on
   RewriteRule ^ https://ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
 
-  # 4C. Canonical homepage is the bare root URL with no redirect loop.
-  RewriteRule ^index\.html$ / [R=301,L,NC]
+  # 4C. Root stays on the live homepage, with no redirect loop or /index.html bounce.
 
   # 4D. Fix legacy homepage aliases that were indexed by older crawlers or CMS URLs.
   RewriteRule ^Home/?$ / [R=301,L,NC]
