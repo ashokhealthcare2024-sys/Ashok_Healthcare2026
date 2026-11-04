@@ -13,11 +13,11 @@
       const h = a.getAttribute('href');
       if (!h || h.includes('://') || h.startsWith('tel:') || h.startsWith('mailto:') || h.startsWith('#') || h.startsWith('javascript:')) return;
       if (h === '/' || h === '') {
-        a.setAttribute('href', isSub ? '../index.html' : 'index.html');
+        a.setAttribute('href', isSub ? '../' : '/');
       } else if (h === '../') {
-        a.setAttribute('href', '../index.html');
+        a.setAttribute('href', '../');
       } else if (h.endsWith('/')) {
-        a.setAttribute('href', h + 'index.html');
+        a.setAttribute('href', h);
       }
     });
   }

@@ -14,13 +14,13 @@
     const isSub = /\/(about-us|services|equipment-products|gallery|blog|careers|contact)\//i.test(window.location.pathname.replace(/\\/g, '/'));
     const clean = href.split('?')[0].split('#')[0];
     if (clean === '/' || clean === '') {
-      return isSub ? '../index.html' : 'index.html';
+      return isSub ? '../' : '/';
     }
     if (clean === '../') {
-      return '../index.html';
+      return '../';
     }
     if (clean.endsWith('/')) {
-      return clean + 'index.html';
+      return clean;
     }
     return null;
   }

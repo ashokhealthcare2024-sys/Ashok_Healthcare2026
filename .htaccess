@@ -24,28 +24,27 @@ Options -Indexes -MultiViews
 
   # 4A. Redirect www to non-www (https://ashokhealthcare.in)
   RewriteCond %{HTTP_HOST} ^www\.ashokhealthcare\.in$ [NC]
-  RewriteRule ^(.*)$ https://ashokhealthcare.in/$1 [L,R=301]
+  RewriteRule ^ https://ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
 
   # 4B. Redirect HTTP to HTTPS
-  RewriteCond %{HTTPS} off
-  RewriteCond %{HTTP:X-Forwarded-Proto} !https
-  RewriteRule ^(.*)$ https://ashokhealthcare.in/$1 [L,R=301]
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
 
-  # 4C. The canonical homepage URL is /index.html, not the directory alias.
-  RewriteRule ^$ https://ashokhealthcare.in/index.html [L,R=301]
+  # 4C. Canonical homepage is the bare root URL with no redirect loop.
+  RewriteRule ^index\.html$ / [R=301,L,NC]
 
   # 4D. Fix legacy homepage aliases that were indexed by older crawlers or CMS URLs.
-  RewriteRule ^Home/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
-  RewriteRule ^Home/index/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
-  RewriteRule ^Home/index\.html$ https://ashokhealthcare.in/index.html [R=301,L,NC]
-  RewriteRule ^home/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
-  RewriteRule ^home/index/?$ https://ashokhealthcare.in/index.html [R=301,L,NC]
-  RewriteRule ^home/index\.html$ https://ashokhealthcare.in/index.html [R=301,L,NC]
+  RewriteRule ^Home/?$ / [R=301,L,NC]
+  RewriteRule ^Home/index/?$ / [R=301,L,NC]
+  RewriteRule ^Home/index\.html$ / [R=301,L,NC]
+  RewriteRule ^home/?$ / [R=301,L,NC]
+  RewriteRule ^home/index/?$ / [R=301,L,NC]
+  RewriteRule ^home/index\.html$ / [R=301,L,NC]
 
   # 4E. Fix legacy about page aliases and keep the canonical URL stable.
-  RewriteRule ^about/?$ https://ashokhealthcare.in/about-us.html [R=301,L,NC]
-  RewriteRule ^about\.html$ https://ashokhealthcare.in/about-us.html [R=301,L,NC]
-  RewriteRule ^about-us/?$ https://ashokhealthcare.in/about-us.html [R=301,L,NC]
+  RewriteRule ^about/?$ /about-us.html [R=301,L,NC]
+  RewriteRule ^about\.html$ /about-us.html [R=301,L,NC]
+  RewriteRule ^about-us/?$ /about-us.html [R=301,L,NC]
 </IfModule>
 
 # 5. SEO ROUTING & LEGACY REQUEST HANDLING
