@@ -23,46 +23,50 @@ Options -Indexes -MultiViews
   RewriteEngine On
 
   # 4A. Redirect all non-WWW and HTTP requests to the preferred canonical domain.
-  RewriteCond %{HTTP_HOST} !^www\.ashokhealthcare\.in$ [NC]
-  RewriteRule ^ https://www.ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
-
+  RewriteCond %{HTTP_HOST} !^www\.ashokhealthcare\.in$ [NC,OR]
   RewriteCond %{HTTPS} !=on
-  RewriteRule ^ https://www.ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
+  RewriteRule ^ https://www.ashokhealthcare.in%{REQUEST_URI} [R=301,L,NE]
 
-  # 4B. Canonicalize legacy .html URLs to clean, slash-terminated URLs.
+  # 4B. Redirect legacy root aliases and canonical home page variations.
+  RewriteRule ^home/?$ / [R=301,L,NE]
+  RewriteRule ^home/index/?$ / [R=301,L,NE]
+  RewriteRule ^home/index\.html$ / [R=301,L,NE]
+  RewriteRule ^index\.html$ / [R=301,L,NE]
+  RewriteRule ^about/?$ /about-us/ [R=301,L,NE]
+  RewriteRule ^about\.html$ /about-us/ [R=301,L,NE]
+
+  # 4C. Exact legacy service URLs: one direct 301 to canonical trailing-slash URLs.
+  RewriteRule ^services/home-nursing\.html$ /services/home-nursing/ [R=301,L,NE]
+  RewriteRule ^services/home-nursing$ /services/home-nursing/ [R=301,L,NE]
+  RewriteRule ^services/home-icu\.html$ /services/home-icu/ [R=301,L,NE]
+  RewriteRule ^services/home-icu$ /services/home-icu/ [R=301,L,NE]
+  RewriteRule ^services/elder-care\.html$ /services/elder-care/ [R=301,L,NE]
+  RewriteRule ^services/elder-care$ /services/elder-care/ [R=301,L,NE]
+
+  # 4D. Exact legacy blog URLs: one direct 301 to canonical trailing-slash URLs.
+  RewriteRule ^blog/(best-home-healthcare-services-in-bangalore|home-nursing-services-in-bangalore-complete-guide|bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients|home-icu-setup-bangalore|physiotherapy-at-home-after-surgery|elder-care-services-guide)\.html$ /blog/$1/ [R=301,L,NE]
+  RewriteRule ^blog/(best-home-healthcare-services-in-bangalore|home-nursing-services-in-bangalore-complete-guide|bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients|home-icu-setup-bangalore|physiotherapy-at-home-after-surgery|elder-care-services-guide)$ /blog/$1/ [R=301,L,NE]
+
+  # 4E. Canonicalize any remaining legacy .html URL in a single redirect.
   RewriteCond %{THE_REQUEST} \s/+(.+?)\.html(?:\?.*)?\s [NC]
-  RewriteRule ^ /%1/ [R=301,L,NE]
+  RewriteRule ^(.+)\.html$ /$1/ [R=301,L,NE]
 
-  # 4C. Serve clean extensionless URLs using their .html equivalents.
+  # 4F. Serve clean extensionless URLs using their matching .html files.
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{DOCUMENT_ROOT}/$1.html -f
   RewriteRule ^(.+?)/?$ /$1.html [L]
 
-  # 4D. Root stays on the live homepage, with no redirect loop or /index.html bounce.
-  RewriteCond %{THE_REQUEST} \s/+index\.html(?:\?.*)?\s [NC]
-  RewriteRule ^index\.html$ / [R=301,L,NE]
-
-  # 4E. Fix legacy homepage aliases that were indexed by older crawlers or CMS URLs.
-  RewriteRule ^Home/?$ / [R=301,L,NC]
-  RewriteRule ^Home/index/?$ / [R=301,L,NC]
-  RewriteRule ^Home/index\.html$ / [R=301,L,NC]
-  RewriteRule ^home/?$ / [R=301,L,NC]
-  RewriteRule ^home/index/?$ / [R=301,L,NC]
-  RewriteRule ^home/index\.html$ / [R=301,L,NC]
-
-  # 4F. Fix legacy about page aliases and keep the canonical URL stable.
-  RewriteRule ^about/?$ /about-us/ [R=301,L,NC]
-  RewriteRule ^about\.html$ /about-us/ [R=301,L,NC]
-  RewriteRule ^about-us/?$ /about-us/ [R=301,L,NC]
+  # 4G. Ensure the final canonical URL is slash-terminated for all real pages.
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^(.+?)/$ /$1.html [L]
 </IfModule>
 
 # 5. SEO ROUTING & LEGACY REQUEST HANDLING
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Directory-style aliases are not page URLs; pages must use their .html paths.
-  RewriteRule ^(about-us|services|equipment-products|gallery|blog|careers|contact)/?$ - [R=404,L,NC]
+  # Canonical URLs are the only valid public URLs. Keep directory-style aliases from being used as primary content paths.
 
   # 5A. Strip Unwanted Query Parameters & 301 Redirect to the Same Canonical Path
   # Whitelists legitimate marketing analytics (utm_*, gclid, fbclid); strips all bot/spam parameters
