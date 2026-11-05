@@ -5,6 +5,7 @@
 # 1. CHARACTER ENCODING
 AddDefaultCharset UTF-8
 AddCharset UTF-8 .html .css .js .json .svg .xml
+AddType text/css .css
 
 # 2. DEFAULT DOCUMENT & CUSTOM ERROR PAGES
 DirectoryIndex index.html
@@ -21,6 +22,12 @@ Options -Indexes -MultiViews
 # 4. HTTPS ENFORCEMENT & CANONICAL DOMAIN (WWW)
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Prevent asset requests and actual files from being rewritten or redirected.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/assets/ [NC]
+  RewriteCond %{REQUEST_URI} !\.(css|js|webp|mp4|webm|svg|jpg|jpeg|png|gif|woff2?|ttf|eot|ico|xml|json)$ [NC]
 
   # 4A. Redirect all non-WWW/HTTP requests to the preferred canonical domain.
   RewriteCond %{HTTP_HOST} !^www\.ashokhealthcare\.in$ [NC,OR]

@@ -38,13 +38,23 @@
   /**
    * Ensures a responsive offcanvas mobile drawer exists in DOM with correct subfolder prefixes
    */
+  function getRelativePathPrefix(pathname) {
+    const normalized = (pathname || '/').replace(/\\/g, '/');
+    const withoutIndex = normalized.replace(/index\.html$/i, '').replace(/\.html$/i, '');
+    const trimmed = withoutIndex.replace(/\/+$/, '');
+    if (!trimmed || trimmed === '/') return '';
+
+    const segments = trimmed.split('/').filter(Boolean);
+    if (segments.length === 1 && segments[0].includes('.')) return '';
+
+    return '../'.repeat(segments.length);
+  }
+
   function ensureMobileDrawer() {
     if (document.getElementById('mobileDrawer')) return;
 
     const pathname = window.location.pathname.toLowerCase();
-    const isSubfolder = pathname.includes('/services/') ||
-                        pathname.includes('/blog/');
-    const prefix = isSubfolder ? '../' : '';
+    const prefix = getRelativePathPrefix(pathname);
 
     // Backdrop
     let backdrop = document.getElementById('drawerBackdrop');
