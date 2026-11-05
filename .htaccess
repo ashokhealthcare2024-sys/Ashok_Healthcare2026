@@ -18,23 +18,32 @@ Options -Indexes -MultiViews
   CheckSpelling Off
 </IfModule>
 
-# 4. HTTPS ENFORCEMENT & CANONICAL DOMAIN (NON-WWW)
+# 4. HTTPS ENFORCEMENT & CANONICAL DOMAIN (WWW)
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # 4A. Redirect www to non-www (https://ashokhealthcare.in)
-  RewriteCond %{HTTP_HOST} ^www\.ashokhealthcare\.in$ [NC]
-  RewriteRule ^ https://ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
+  # 4A. Redirect all non-WWW and HTTP requests to the preferred canonical domain.
+  RewriteCond %{HTTP_HOST} !^www\.ashokhealthcare\.in$ [NC]
+  RewriteRule ^ https://www.ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
 
-  # 4B. Redirect HTTP to HTTPS
   RewriteCond %{HTTPS} !=on
-  RewriteRule ^ https://ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
+  RewriteRule ^ https://www.ashokhealthcare.in%{REQUEST_URI} [L,R=301,NE]
 
-  # 4C. Root stays on the live homepage, with no redirect loop or /index.html bounce.
+  # 4B. Canonicalize legacy .html URLs to clean, slash-terminated URLs.
+  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html(?:\?.*)?\s [NC]
+  RewriteRule ^ /%1/ [R=301,L,NE]
+
+  # 4C. Serve clean extensionless URLs using their .html equivalents.
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(.+?)/?$ /$1.html [L]
+
+  # 4D. Root stays on the live homepage, with no redirect loop or /index.html bounce.
   RewriteCond %{THE_REQUEST} \s/+index\.html(?:\?.*)?\s [NC]
   RewriteRule ^index\.html$ / [R=301,L,NE]
 
-  # 4D. Fix legacy homepage aliases that were indexed by older crawlers or CMS URLs.
+  # 4E. Fix legacy homepage aliases that were indexed by older crawlers or CMS URLs.
   RewriteRule ^Home/?$ / [R=301,L,NC]
   RewriteRule ^Home/index/?$ / [R=301,L,NC]
   RewriteRule ^Home/index\.html$ / [R=301,L,NC]
@@ -42,10 +51,10 @@ Options -Indexes -MultiViews
   RewriteRule ^home/index/?$ / [R=301,L,NC]
   RewriteRule ^home/index\.html$ / [R=301,L,NC]
 
-  # 4E. Fix legacy about page aliases and keep the canonical URL stable.
-  RewriteRule ^about/?$ /about-us.html [R=301,L,NC]
-  RewriteRule ^about\.html$ /about-us.html [R=301,L,NC]
-  RewriteRule ^about-us/?$ /about-us.html [R=301,L,NC]
+  # 4F. Fix legacy about page aliases and keep the canonical URL stable.
+  RewriteRule ^about/?$ /about-us/ [R=301,L,NC]
+  RewriteRule ^about\.html$ /about-us/ [R=301,L,NC]
+  RewriteRule ^about-us/?$ /about-us/ [R=301,L,NC]
 </IfModule>
 
 # 5. SEO ROUTING & LEGACY REQUEST HANDLING
@@ -59,7 +68,7 @@ Options -Indexes -MultiViews
   # Whitelists legitimate marketing analytics (utm_*, gclid, fbclid); strips all bot/spam parameters
   RewriteCond %{QUERY_STRING} !^$
   RewriteCond %{QUERY_STRING} !(^|&)(utm_[a-z]+|gclid|fbclid)= [NC]
-  RewriteRule ^(.*)$ https://ashokhealthcare.in/$1? [R=301,L]
+  RewriteRule ^(.*)$ https://www.ashokhealthcare.in/$1? [R=301,L]
 
   # 5D. Media Relocation: 301 Redirect legacy /images/ and /Gallery/ requests to /assets/
   RewriteRule ^images/(.+)$ /assets/images/$1 [R=301,L,NC]
