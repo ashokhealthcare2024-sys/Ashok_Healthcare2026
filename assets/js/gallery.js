@@ -10,12 +10,29 @@
   const pathPrefix = '/';
   const FALLBACK_MEDIA_SRC = '/assets/images/ashoklogoh-tras.webp';
 
+  function toSafeUrlPath(value) {
+    if (!value) return '';
+    const trimmed = String(value).trim();
+    if (!trimmed) return '';
+
+    const cleaned = trimmed.replace(/^\.\//, '').replace(/^\//, '').replace(/\\/g, '/');
+    if (!cleaned) return '';
+
+    return '/' + cleaned
+      .split('/')
+      .filter(Boolean)
+      .map(segment => encodeURIComponent(decodeURIComponent(segment)))
+      .join('/');
+  }
+
   function resolveMediaUrl(src) {
     if (!src) return FALLBACK_MEDIA_SRC;
-    if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/')) {
-      return src;
-    }
-    return `/${src.replace(/^\.\//, '').replace(/^\//, '')}`;
+    const trimmed = String(src).trim();
+
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    if (trimmed.startsWith('/')) return trimmed;
+
+    return toSafeUrlPath(trimmed) || FALLBACK_MEDIA_SRC;
   }
 
   function withFallbackMedia(event) {
@@ -24,6 +41,7 @@
     if (target.tagName === 'IMG') {
       target.onerror = null;
       target.src = FALLBACK_MEDIA_SRC;
+      target.loading = 'eager';
     }
     if (target.tagName === 'VIDEO') {
       target.onerror = null;
@@ -1360,7 +1378,7 @@
     let html = '';
     toShow.forEach((item, index) => {
       const mediaSrc = resolveMediaUrl(item.src);
-      const encodedSrc = pathPrefix + encodeURI(mediaSrc.replace(/^\//, ''));
+      const encodedSrc = mediaSrc.startsWith('/') ? mediaSrc : `${pathPrefix}${mediaSrc}`;
       const isVideo = item.type === 'video';
 
       html += `
@@ -1449,7 +1467,7 @@
     if (!lightboxModal) initDOMElements();
     if (!lightboxModal) return;
 
-    const encodedSrc = pathPrefix + encodeURI(resolveMediaUrl(item.src).replace(/^\//, ''));
+    const encodedSrc = resolveMediaUrl(item.src);
 
     // Stop any existing video before showing
     if (lightboxVideo) {
