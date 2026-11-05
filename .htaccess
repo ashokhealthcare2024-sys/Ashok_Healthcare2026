@@ -22,20 +22,12 @@ Options -Indexes -MultiViews
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # 4A. Redirect all non-WWW and HTTP requests to the preferred canonical domain.
+  # 4A. Redirect all non-WWW/HTTP requests to the preferred canonical domain.
   RewriteCond %{HTTP_HOST} !^www\.ashokhealthcare\.in$ [NC,OR]
   RewriteCond %{HTTPS} !=on
   RewriteRule ^ https://www.ashokhealthcare.in%{REQUEST_URI} [R=301,L,NE]
 
-  # 4B. Fix directory URLs that map to static HTML files without causing 403/DirectoryIndex loops.
-  RewriteRule ^services$ /services/ [R=301,L,NE]
-  RewriteRule ^services/$ /services.html [L,NC]
-  RewriteRule ^blog$ /blog/ [R=301,L,NE]
-  RewriteRule ^blog/$ /blog.html [L,NC]
-  RewriteRule ^services/index\.html$ /services/ [R=301,L,NE]
-  RewriteRule ^blog/index\.html$ /blog/ [R=301,L,NE]
-
-  # 4C. Redirect legacy root aliases and canonical home page variations.
+  # 4B. Exact legacy root aliases.
   RewriteRule ^home/?$ / [R=301,L,NE]
   RewriteRule ^home/index/?$ / [R=301,L,NE]
   RewriteRule ^home/index\.html$ / [R=301,L,NE]
@@ -43,7 +35,7 @@ Options -Indexes -MultiViews
   RewriteRule ^about/?$ /about-us/ [R=301,L,NE]
   RewriteRule ^about\.html$ /about-us/ [R=301,L,NE]
 
-  # 4D. Exact legacy service URLs: one direct 301 to canonical trailing-slash URLs.
+  # 4C. Exact legacy service URLs: one direct 301 to canonical slash URLs.
   RewriteRule ^services/home-nursing\.html$ /services/home-nursing/ [R=301,L,NE]
   RewriteRule ^services/home-nursing$ /services/home-nursing/ [R=301,L,NE]
   RewriteRule ^services/home-icu\.html$ /services/home-icu/ [R=301,L,NE]
@@ -51,16 +43,19 @@ Options -Indexes -MultiViews
   RewriteRule ^services/elder-care\.html$ /services/elder-care/ [R=301,L,NE]
   RewriteRule ^services/elder-care$ /services/elder-care/ [R=301,L,NE]
 
-  # 4D. Exact legacy blog URLs: one direct 301 to canonical trailing-slash URLs.
+  # 4D. Exact legacy blog URLs: one direct 301 to canonical slash URLs.
   RewriteRule ^blog/(best-home-healthcare-services-in-bangalore|home-nursing-services-in-bangalore-complete-guide|bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients|home-icu-setup-bangalore|physiotherapy-at-home-after-surgery|elder-care-services-guide)\.html$ /blog/$1/ [R=301,L,NE]
   RewriteRule ^blog/(best-home-healthcare-services-in-bangalore|home-nursing-services-in-bangalore-complete-guide|bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients|home-icu-setup-bangalore|physiotherapy-at-home-after-surgery|elder-care-services-guide)$ /blog/$1/ [R=301,L,NE]
 
-  # 4E. Canonicalize any remaining legacy .html URL in a single redirect.
+  # 4E. Legacy .html requests only redirect once to the slash URL. Guarded to avoid loop during internal rewrites.
+  RewriteCond %{ENV:REDIRECT_STATUS} ^$
   RewriteCond %{THE_REQUEST} \s/+(.+?)\.html(?:\?.*)?\s [NC]
   RewriteRule ^(.+)\.html$ /$1/ [R=301,L,NE]
 
-  # 4F. Serve canonical trailing-slash URLs using the matching HTML files without looping.
-  RewriteRule ^(about-us|services|equipment-products|gallery|blog|careers|contact|palliative-care-bangalore|rehabilitation-centre-in-bangalore|nri-parents-care-monitoring-bangalore|home-nursing-healthcare-services-bangalore|home-nursing-charges-bangalore|hospital-discharge-checklist-bangalore|home-nurse-vs-caregiver-bangalore|oxygen-concentrator-rental-bangalore|hospital-bed-rental-bangalore|bipap-cpap-machine-rental-bangalore|patient-monitor-rental-bangalore|wheelchair-rental-bangalore|suction-machine-rental-bangalore|privacy|terms)/?$ /$1.html [L,NC]
+  # 4F. Serve canonical slash URLs from their matching HTML files without redirect loops.
+  RewriteRule ^(about-us|equipment-products|gallery|blog|careers|contact|palliative-care-bangalore|rehabilitation-centre-in-bangalore|nri-parents-care-monitoring-bangalore|home-nursing-healthcare-services-bangalore|home-nursing-charges-bangalore|hospital-discharge-checklist-bangalore|home-nurse-vs-caregiver-bangalore|oxygen-concentrator-rental-bangalore|hospital-bed-rental-bangalore|bipap-cpap-machine-rental-bangalore|patient-monitor-rental-bangalore|wheelchair-rental-bangalore|suction-machine-rental-bangalore|privacy|terms)/?$ /$1.html [L,NC]
+  RewriteRule ^services/?$ /services.html [L,NC]
+  RewriteRule ^blog/?$ /blog.html [L,NC]
   RewriteRule ^services/(home-nursing|home-icu|elder-care)/?$ /services/$1.html [L,NC]
   RewriteRule ^blog/(best-home-healthcare-services-in-bangalore|home-nursing-services-in-bangalore-complete-guide|bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients|home-icu-setup-bangalore|physiotherapy-at-home-after-surgery|elder-care-services-guide)/?$ /blog/$1.html [L,NC]
 </IfModule>

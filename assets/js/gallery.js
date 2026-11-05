@@ -7,8 +7,16 @@
 (function () {
   'use strict';
 
-  const pathPrefix = '/';
-  const FALLBACK_MEDIA_SRC = '/assets/images/ashoklogoh-tras.webp';
+  function getAssetBasePath() {
+    const pathname = window.location.pathname || '/';
+    const normalized = pathname.replace(/index\.html$/i, '').replace(/\.html$/i, '').replace(/\/+$/, '');
+    const hasRootPath = normalized === '' || normalized === '/';
+    const depth = hasRootPath ? 0 : normalized.split('/').filter(Boolean).length;
+    return depth === 0 ? './' : Array(depth).fill('../').join('');
+  }
+
+  const pathPrefix = getAssetBasePath();
+  const FALLBACK_MEDIA_SRC = `${pathPrefix}assets/images/ashoklogoh-tras.webp`;
 
   function toSafeUrlPath(value) {
     if (!value) return '';
@@ -18,11 +26,11 @@
     const cleaned = trimmed.replace(/^\.\//, '').replace(/^\//, '').replace(/\\/g, '/');
     if (!cleaned) return '';
 
-    return '/' + cleaned
+    return `${pathPrefix}${cleaned
       .split('/')
       .filter(Boolean)
       .map(segment => encodeURIComponent(decodeURIComponent(segment)))
-      .join('/');
+      .join('/')}`;
   }
 
   function resolveMediaUrl(src) {
@@ -30,7 +38,9 @@
     const trimmed = String(src).trim();
 
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
-    if (trimmed.startsWith('/')) return trimmed;
+    if (trimmed.startsWith('/')) return `${pathPrefix}${trimmed.replace(/^\/+/, '')}`;
+    if (trimmed.startsWith('../') || trimmed.startsWith('./')) return trimmed;
+    if (trimmed.startsWith('assets/')) return `${pathPrefix}${trimmed}`;
 
     return toSafeUrlPath(trimmed) || FALLBACK_MEDIA_SRC;
   }
@@ -1377,8 +1387,7 @@
 
     let html = '';
     toShow.forEach((item, index) => {
-      const mediaSrc = resolveMediaUrl(item.src);
-      const encodedSrc = mediaSrc.startsWith('/') ? mediaSrc : `${pathPrefix}${mediaSrc}`;
+      const encodedSrc = resolveMediaUrl(item.src);
       const isVideo = item.type === 'video';
 
       html += `
