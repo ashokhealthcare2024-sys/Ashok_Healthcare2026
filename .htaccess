@@ -27,7 +27,15 @@ Options -Indexes -MultiViews
   RewriteCond %{HTTPS} !=on
   RewriteRule ^ https://www.ashokhealthcare.in%{REQUEST_URI} [R=301,L,NE]
 
-  # 4B. Redirect legacy root aliases and canonical home page variations.
+  # 4B. Fix directory URLs that map to static HTML files without causing 403/DirectoryIndex loops.
+  RewriteRule ^services$ /services/ [R=301,L,NE]
+  RewriteRule ^services/$ /services.html [L,NC]
+  RewriteRule ^blog$ /blog/ [R=301,L,NE]
+  RewriteRule ^blog/$ /blog.html [L,NC]
+  RewriteRule ^services/index\.html$ /services/ [R=301,L,NE]
+  RewriteRule ^blog/index\.html$ /blog/ [R=301,L,NE]
+
+  # 4C. Redirect legacy root aliases and canonical home page variations.
   RewriteRule ^home/?$ / [R=301,L,NE]
   RewriteRule ^home/index/?$ / [R=301,L,NE]
   RewriteRule ^home/index\.html$ / [R=301,L,NE]
@@ -35,7 +43,7 @@ Options -Indexes -MultiViews
   RewriteRule ^about/?$ /about-us/ [R=301,L,NE]
   RewriteRule ^about\.html$ /about-us/ [R=301,L,NE]
 
-  # 4C. Exact legacy service URLs: one direct 301 to canonical trailing-slash URLs.
+  # 4D. Exact legacy service URLs: one direct 301 to canonical trailing-slash URLs.
   RewriteRule ^services/home-nursing\.html$ /services/home-nursing/ [R=301,L,NE]
   RewriteRule ^services/home-nursing$ /services/home-nursing/ [R=301,L,NE]
   RewriteRule ^services/home-icu\.html$ /services/home-icu/ [R=301,L,NE]
@@ -51,15 +59,10 @@ Options -Indexes -MultiViews
   RewriteCond %{THE_REQUEST} \s/+(.+?)\.html(?:\?.*)?\s [NC]
   RewriteRule ^(.+)\.html$ /$1/ [R=301,L,NE]
 
-  # 4F. Serve clean extensionless URLs using their matching .html files.
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-  RewriteRule ^(.+?)/?$ /$1.html [L]
-
-  # 4G. Ensure the final canonical URL is slash-terminated for all real pages.
-  RewriteCond %{REQUEST_FILENAME} -f
-  RewriteRule ^(.+?)/$ /$1.html [L]
+  # 4F. Serve canonical trailing-slash URLs using the matching HTML files without looping.
+  RewriteRule ^(about-us|services|equipment-products|gallery|blog|careers|contact|palliative-care-bangalore|rehabilitation-centre-in-bangalore|nri-parents-care-monitoring-bangalore|home-nursing-healthcare-services-bangalore|home-nursing-charges-bangalore|hospital-discharge-checklist-bangalore|home-nurse-vs-caregiver-bangalore|oxygen-concentrator-rental-bangalore|hospital-bed-rental-bangalore|bipap-cpap-machine-rental-bangalore|patient-monitor-rental-bangalore|wheelchair-rental-bangalore|suction-machine-rental-bangalore|privacy|terms)/?$ /$1.html [L,NC]
+  RewriteRule ^services/(home-nursing|home-icu|elder-care)/?$ /services/$1.html [L,NC]
+  RewriteRule ^blog/(best-home-healthcare-services-in-bangalore|home-nursing-services-in-bangalore-complete-guide|bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients|home-icu-setup-bangalore|physiotherapy-at-home-after-surgery|elder-care-services-guide)/?$ /blog/$1.html [L,NC]
 </IfModule>
 
 # 5. SEO ROUTING & LEGACY REQUEST HANDLING
