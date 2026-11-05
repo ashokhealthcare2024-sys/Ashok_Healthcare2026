@@ -49,7 +49,7 @@ deployment:
 
     # 6. DEPLOY OPTIONAL RSS FEED
     - /bin/cp -f rss.xml "$DEPLOYPATH" 2>/dev/null || true
-    - /bin/cp -f google365c6c761a442363.html "$DEPLOYPATH" 2>/dev/null || true
+    - /bin/cp -f googleIQEcN6fdR2LLBfCbLQ7fGA11EOqXO-aLsVHllsr42Q0.html "$DEPLOYPATH" 2>/dev/null || true
 
     # 7. DEPLOY PAGE DIRECTORIES
     # Existing services and blog pages are preserved.
