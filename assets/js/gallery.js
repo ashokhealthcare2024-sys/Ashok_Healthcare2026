@@ -7,7 +7,31 @@
 (function () {
   'use strict';
 
-  const pathPrefix = '';
+  const pathPrefix = '/';
+  const FALLBACK_MEDIA_SRC = '/assets/images/ashoklogoh-tras.webp';
+
+  function resolveMediaUrl(src) {
+    if (!src) return FALLBACK_MEDIA_SRC;
+    if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/')) {
+      return src;
+    }
+    return `/${src.replace(/^\.\//, '').replace(/^\//, '')}`;
+  }
+
+  function withFallbackMedia(event) {
+    const target = event && event.currentTarget ? event.currentTarget : null;
+    if (!target) return;
+    if (target.tagName === 'IMG') {
+      target.onerror = null;
+      target.src = FALLBACK_MEDIA_SRC;
+    }
+    if (target.tagName === 'VIDEO') {
+      target.onerror = null;
+      target.pause();
+      target.src = FALLBACK_MEDIA_SRC;
+      target.poster = FALLBACK_MEDIA_SRC;
+    }
+  }
 
   // 121 Verified Media Assets (108 Photos, 13 Videos)
   const GALLERY_ITEMS = [
@@ -1335,7 +1359,8 @@
 
     let html = '';
     toShow.forEach((item, index) => {
-      const encodedSrc = pathPrefix + encodeURI(item.src);
+      const mediaSrc = resolveMediaUrl(item.src);
+      const encodedSrc = pathPrefix + encodeURI(mediaSrc.replace(/^\//, ''));
       const isVideo = item.type === 'video';
 
       html += `
@@ -1345,14 +1370,14 @@
               ${isVideo ? '🎥 Video' : '📷 Photo'}
             </span>
             ${isVideo ? `
-              <video src="${encodedSrc}#t=0.5" preload="metadata" muted playsinline aria-hidden="true"></video>
+              <video src="${encodedSrc}#t=0.5" preload="metadata" muted playsinline controls aria-hidden="true" poster="${FALLBACK_MEDIA_SRC}" onerror="this.onerror=null;this.src='${FALLBACK_MEDIA_SRC}';this.poster='${FALLBACK_MEDIA_SRC}';"></video>
               <div class="gallery-play-overlay">
                 <div class="play-circle-btn" title="Watch Video">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                 </div>
               </div>
             ` : `
-              <img src="${encodedSrc}" alt="${item.title}" loading="lazy">
+              <img src="${encodedSrc}" alt="${item.title}" loading="lazy" decoding="async" width="720" height="480" onerror="this.onerror=null;this.src='${FALLBACK_MEDIA_SRC}';">
               <div class="gallery-zoom-overlay">
                 <div class="zoom-circle-btn" title="Enlarge Image">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
@@ -1424,7 +1449,7 @@
     if (!lightboxModal) initDOMElements();
     if (!lightboxModal) return;
 
-    const encodedSrc = pathPrefix + encodeURI(item.src);
+    const encodedSrc = pathPrefix + encodeURI(resolveMediaUrl(item.src).replace(/^\//, ''));
 
     // Stop any existing video before showing
     if (lightboxVideo) {
@@ -1438,6 +1463,10 @@
       if (lightboxVideo) {
         lightboxVideo.style.display = 'block';
         lightboxVideo.src = encodedSrc;
+        lightboxVideo.muted = true;
+        lightboxVideo.playsInline = true;
+        lightboxVideo.setAttribute('playsinline', 'true');
+        lightboxVideo.setAttribute('controls', 'controls');
         lightboxVideo.load();
         lightboxVideo.play().catch(() => {
           // Autoplay was prevented by browser policy, user can click play
@@ -1449,6 +1478,8 @@
         lightboxImg.style.display = 'block';
         lightboxImg.src = encodedSrc;
         lightboxImg.alt = item.title;
+        lightboxImg.width = 1200;
+        lightboxImg.height = 900;
       }
     }
 
