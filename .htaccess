@@ -1,0 +1,265 @@
+# ==============================================================================
+# ASHOK HOME HEALTHCARE SERVICES - APACHE / CPANEL PRODUCTION CONFIGURATION
+# ==============================================================================
+
+# 1. CHARACTER ENCODING
+AddDefaultCharset UTF-8
+AddCharset UTF-8 .html .css .js .json .svg .xml
+
+# 2. DEFAULT DOCUMENT & CUSTOM ERROR PAGES
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+# 3. PREVENT DIRECTORY BROWSING & DISABLE MULTIVIEWS
+Options -Indexes -MultiViews
+
+# Disable spelling auto-correction
+<IfModule mod_speling.c>
+  CheckSpelling Off
+</IfModule>
+
+# 4. HTTPS ENFORCEMENT & CANONICAL DOMAIN (NON-WWW)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Serve the homepage only at the canonical root URL, not /index.html.
+  RewriteRule ^index\.html$ https://ashokhealthcare.in/ [R=301,L]
+
+  # 4A. Redirect www to non-www (https://ashokhealthcare.in)
+  RewriteCond %{HTTP_HOST} ^www\.ashokhealthcare\.in$ [NC]
+  RewriteRule ^(.*)$ https://ashokhealthcare.in/$1 [L,R=301]
+
+  # 4B. Redirect HTTP to HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^(.*)$ https://ashokhealthcare.in/$1 [L,R=301]
+</IfModule>
+
+# 5. SEO ROUTING, CANONICAL REDIRECTS & EXTENSIONLESS HTML RESOLUTION
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # 5A. Canonical 301 Redirects from Legacy .html URLs to New Page Directories
+  RewriteRule ^about(\.html)?$ /about-us/ [R=301,L,NC]
+  RewriteRule ^about-ashok-healthcare-bangalore\.html$ /about-us/ [R=301,L,NC]
+  RewriteRule ^services\.html$ /services/ [R=301,L,NC]
+  RewriteRule ^products(\.html)?/?$ /equipment-products/ [R=301,L,NC]
+  RewriteRule ^gallery\.html$ /gallery/ [R=301,L,NC]
+  RewriteRule ^blog\.html$ /blog/ [R=301,L,NC]
+  RewriteRule ^careers\.html$ /careers/ [R=301,L,NC]
+  RewriteRule ^contact\.html$ /contact/ [R=301,L,NC]
+
+  # Normalize /index.html in subdirectories to canonical trailing slash
+  RewriteRule ^about-us/index\.html$ /about-us/ [R=301,L,NC]
+  RewriteRule ^services/index\.html$ /services/ [R=301,L,NC]
+  RewriteRule ^equipment-products/index\.html$ /equipment-products/ [R=301,L,NC]
+  RewriteRule ^gallery/index\.html$ /gallery/ [R=301,L,NC]
+  RewriteRule ^blog/index\.html$ /blog/ [R=301,L,NC]
+  RewriteRule ^careers/index\.html$ /careers/ [R=301,L,NC]
+  RewriteRule ^contact/index\.html$ /contact/ [R=301,L,NC]
+
+  # Shortcut routes to clinical service pages (with or without .html)
+  RewriteRule ^home-nursing(\.html)?$ /services/home-nursing.html [R=301,L,NC]
+  RewriteRule ^home-icu(\.html)?$ /services/home-icu.html [R=301,L,NC]
+  RewriteRule ^elder-care(\.html)?$ /services/elder-care.html [R=301,L,NC]
+
+  # 5B. Canonical 301 Redirects for Duplicate & Legacy Services Pages
+  RewriteRule ^services/home-healthcare-services-bangalore(\.html)?$ /services/ [R=301,L,NC]
+  RewriteRule ^services/home-healthcare-nursing-services-bangalore(\.html)?$ /services/ [R=301,L,NC]
+
+  RewriteRule ^services/ambulance(-services)?(\.html)?$ /ambulance-services.html [R=301,L,NC]
+  RewriteRule ^services/diagnostics?(-services)?(\.html)?$ /diagnostics.html [R=301,L,NC]
+  RewriteRule ^services/physiotherapy(-at-home)?(\.html)?$ /physiotherapy.html [R=301,L,NC]
+  RewriteRule ^services/rehabilitation(-neuro-and-ortho)?(\.html)?$ /rehabilitation-neuro-and-ortho.html [R=301,L,NC]
+  RewriteRule ^services/medical-equipment-rent-and-sales(\.html)?$ /medical-equipment-rent-and-sales.html [R=301,L,NC]
+
+  # Duplicate directory index documents
+  RewriteRule ^ambulance-services/index\.html$ /ambulance-services.html [R=301,L,NC]
+  RewriteRule ^diagnostics/index\.html$ /diagnostics.html [R=301,L,NC]
+  RewriteRule ^physiotherapy/index\.html$ /physiotherapy.html [R=301,L,NC]
+  RewriteRule ^rehabilitation-neuro-and-ortho/index\.html$ /rehabilitation-neuro-and-ortho.html [R=301,L,NC]
+  RewriteRule ^medical-equipment-rent-and-sales/index\.html$ /medical-equipment-rent-and-sales.html [R=301,L,NC]
+
+  # 5C. Legacy & Alternative Pages
+  RewriteRule ^Hospital-discharge-checklist-bangalore\.html$ /hospital-discharge-checklist-bangalore.html [R=301,L,NC]
+  RewriteRule ^home-nursing-&-healthcare-services-in-bangalore\.htm$ /home-nursing-healthcare-services-bangalore.html [R=301,L,NC,NE]
+
+  # 5D. Prevent Direct Access to Component Snippets (Return 404 Not Found)
+  RewriteRule ^components(/.*)?$ - [R=404,L]
+
+  # 5E. Legacy WordPress & Attack Query String Parameters - Return HTTP 410 Gone
+  # Instantly purges millions of ?p=, ?s=, ?page_id=, ?post_type=, etc.
+  RewriteCond %{QUERY_STRING} (?:^|&)(p|page_id|s|post_type|attachment_id|feed|cat|tag|author|m|replytocom|wordfence_lh)= [NC]
+  RewriteRule ^.*$ - [G,L]
+
+  # 5F. Legacy WordPress Paths, Date Archives & Any PHP Scripts - Return HTTP 410 Gone
+  # The website is 100% static HTML. Zero PHP files exist. All legacy WP endpoints permanently return 410.
+  RewriteRule ^(wp-.*|xmlrpc\.php|wp-content|wp-includes|wp-json|category|tag|author|feed|comments|page/[0-9]+|20[0-9]{2}/[0-9]{2})(/.*)?$ - [G,L]
+  RewriteRule \.php$ - [G,L]
+
+  # 5G. Strip Unwanted Query Parameters & 301 Redirect to Clean Canonical URL
+  # Whitelists legitimate marketing analytics (utm_*, gclid, fbclid); strips all bot/spam parameters
+  RewriteCond %{QUERY_STRING} !^$
+  RewriteCond %{QUERY_STRING} !(^|&)(utm_[a-z]+|gclid|fbclid)= [NC]
+  RewriteRule ^(.*)$ https://ashokhealthcare.in/$1? [R=301,L]
+
+  # 5H. Extensionless URLs: Seamless resolution without 404
+  # Check if requested filename + .html exists physically on server
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^(.+?)/?$ /$1.html [L]
+
+  # Fallback checks using DOCUMENT_ROOT for root and subdirectories
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^([^/]+)/?$ /$1.html [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/services/$1.html -f
+  RewriteRule ^services/([^/]+)/?$ /services/$1.html [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/blog/$1.html -f
+  RewriteRule ^blog/([^/]+)/?$ /blog/$1.html [L]
+
+  # 5I. Media Relocation: 301 Redirect legacy /images/ and /Gallery/ requests to /assets/
+  RewriteRule ^images/(.+)$ /assets/images/$1 [R=301,L,NC]
+  RewriteRule ^Gallery/(.+)$ /assets/gallery/$1 [R=301,L,NC]
+  RewriteRule ^gallery_([1-3])/(.+)$ /assets/gallery/gallery_$1/$2 [R=301,L,NC]
+</IfModule>
+
+
+# 6. MOBILE PERFORMANCE & BROTLI / DEFLATE COMPRESSION
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css
+  AddOutputFilterByType BROTLI_COMPRESS text/javascript application/javascript application/x-javascript
+  AddOutputFilterByType BROTLI_COMPRESS application/json application/xml application/rss+xml
+  AddOutputFilterByType BROTLI_COMPRESS image/svg+xml font/ttf font/otf application/vnd.ms-fontobject
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE text/javascript application/javascript application/x-javascript
+  AddOutputFilterByType DEFLATE application/json application/xml application/rss+xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE font/ttf font/otf application/vnd.ms-fontobject
+</IfModule>
+
+# 7. AUTOMATIC WEBP NEGOTIATION & FALLBACK FOR OLD IMAGE EXTENSIONS
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # 7A. If client accepts WebP and a .webp file exists on disk, serve it
+  RewriteCond %{HTTP_ACCEPT} image/webp
+  RewriteCond %{DOCUMENT_ROOT}/$1.webp -f
+  RewriteRule ^(.+)\.(jpe?g|png)$ $1.webp [T=image/webp,E=accept:1,L]
+
+  # 7B. If legacy .png/.jpg is requested directly but only .webp is present, serve .webp
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/$1.webp -f
+  RewriteRule ^(.+)\.(jpe?g|png)$ $1.webp [T=image/webp,L]
+
+  # 7C. Directory alias fallbacks for services & equipment image folders
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/images/services_img/$1 -f
+  RewriteRule ^images/services/(.+)$ /images/services_img/$1 [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/images/equipment_img/$1 -f
+  RewriteRule ^images/equipment/(.+)$ /images/equipment_img/$1 [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header append Vary Accept env=REDIRECT_accept
+</IfModule>
+
+# 8. BLOCK ACCESS TO INTERNAL & SENSITIVE FILES
+<FilesMatch "^(\.git|\.env.*|\.cpanel\.yml|\.gitignore|README\.md)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# 9. VIDEO STREAMING & HTTP RANGE REQUESTS
+# Essential for clinical MP4/WebM video playback & seeking across Safari & Chrome
+<IfModule mod_headers.c>
+  <FilesMatch "\.(mp4|webm|mov|ogg)$">
+    Header set Accept-Ranges bytes
+  </FilesMatch>
+</IfModule>
+
+# 10. MIME TYPES FOR MODERN WEB FORMATS
+<IfModule mod_mime.c>
+  AddType image/svg+xml .svg .svgz
+  AddType image/webp .webp
+  AddType video/mp4 .mp4
+  AddType video/webm .webm
+  AddType font/woff .woff
+  AddType font/woff2 .woff2
+  AddType application/json .json
+  AddType application/xml .xml
+</IfModule>
+
+# 11. BROWSER CACHING & INSTANT MOBILE RE-LOADS (mod_expires & mod_headers)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+
+  # HTML documents - Revalidate for instant updates
+  ExpiresByType text/html "access plus 0 seconds"
+
+  # Stylesheets & Scripts - 1 Year Cache
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+
+  # Media & Images (WebP cached for 1 full year)
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+
+  # Videos
+  ExpiresByType video/mp4 "access plus 1 month"
+  ExpiresByType video/webm "access plus 1 month"
+
+  # Fonts
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+</IfModule>
+
+# 12. HTTP HEADERS: AGGRESSIVE CACHING, KEEP-ALIVE & SECURITY
+<IfModule mod_headers.c>
+  # 1-Year Immutable Caching for Static Assets (Instant Mobile Repeat Visits)
+  <FilesMatch "\.(ico|pdf|jpg|jpeg|png|gif|webp|svg|js|css|woff|woff2|ttf|eot)$">
+    Header set Cache-Control "max-age=31536000, public, immutable"
+  </FilesMatch>
+
+  # HTML Cache Control - Freshness guaranteed
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # Keep-Alive for Mobile TCP connection reuse
+  Header set Connection keep-alive
+
+  # Protect against MIME type sniffing
+  Header set X-Content-Type-Options "nosniff"
+  # Clickjacking defense
+  Header set X-Frame-Options "SAMEORIGIN"
+  # Referrer policy for privacy
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
