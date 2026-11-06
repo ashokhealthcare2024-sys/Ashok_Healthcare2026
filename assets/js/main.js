@@ -7,25 +7,45 @@
 (function initFileProtocolCompat() {
   if (window.location.protocol !== 'file:') return;
 
+  const scriptUrl = document.currentScript && document.currentScript.src;
+  const siteRoot = scriptUrl ? new URL('../../', scriptUrl) : null;
+
   function resolveFileLink(href) {
-    if (!href || href.includes('://') || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('#') || href.startsWith('javascript:')) {
+    if (!siteRoot || !href || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('#') || href.startsWith('javascript:')) {
       return null;
     }
-    const isSub = /\/(about-us|services|equipment-products|gallery|blog|careers|contact)\//i.test(window.location.pathname.replace(/\\/g, '/'));
-    const clean = href.split('?')[0].split('#')[0];
-    if (clean === '/' || clean === '') {
-      return isSub ? '../' : '/';
+
+    let target;
+    try {
+      target = href.startsWith('/') && !href.startsWith('//')
+        ? new URL(href.slice(1), siteRoot)
+        : new URL(href, window.location.href);
+    } catch (error) {
+      console.warn('Unable to resolve local navigation link:', href, error);
+      return null;
     }
-    if (clean === '../') {
-      return '../';
+
+    const isSiteLink = /^https?:$/.test(target.protocol) &&
+      /^(www\.)?ashokhealthcare\.in$/i.test(target.hostname);
+    const isLocalLink = target.protocol === 'file:' &&
+      target.pathname.toLowerCase().startsWith(siteRoot.pathname.toLowerCase());
+    if (!isSiteLink && !isLocalLink) return null;
+
+    let path = isSiteLink
+      ? target.pathname.replace(/^\/+/, '')
+      : target.pathname.slice(siteRoot.pathname.length);
+    if (!path || path.endsWith('/')) {
+      path += 'index.html';
+    } else if (!/\.[^/]+$/.test(path)) {
+      path += '/index.html';
     }
-    if (clean.endsWith('/')) {
-      return clean;
-    }
-    return null;
+
+    const localUrl = new URL(path, siteRoot);
+    localUrl.search = target.search;
+    localUrl.hash = target.hash;
+    return localUrl.href;
   }
 
-  // Intercept all link clicks immediately
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a[href]');
     if (!link) return;
@@ -36,13 +56,10 @@
     }
   }, true);
 
-  // Also rewrite href attributes in DOM when ready
   const rewriteLinks = () => {
     document.querySelectorAll('a[href]').forEach(a => {
       const resolved = resolveFileLink(a.getAttribute('href'));
-      if (resolved) {
-        a.setAttribute('href', resolved);
-      }
+      if (resolved) a.setAttribute('href', resolved);
     });
   };
 

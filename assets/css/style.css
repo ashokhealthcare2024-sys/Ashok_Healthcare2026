@@ -42,6 +42,12 @@ html {
   }
 }
 
+@media (max-width: 575.98px) {
+  .row.g-5.align-items-start {
+    --bs-gutter-x: 1.5rem;
+  }
+}
+
 a, button, input, select, textarea, .btn, .nav-item-link {
   touch-action: manipulation;
 }

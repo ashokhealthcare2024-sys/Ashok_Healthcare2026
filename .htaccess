@@ -23,6 +23,21 @@ Options -Indexes -MultiViews
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # Protect dotfiles and the external, non-deployable removal archive.
+  RewriteRule (^|/)\. - [F,L]
+  RewriteRule ^_removed_backup(?:/|$) - [F,L]
+
+  # Collapse the duplicate About Us path produced by relative self-links.
+  RewriteRule ^about-us/about-us/?$ https://www.ashokhealthcare.in/about-us/ [R=301,L,NE,QSD]
+  RewriteRule ^about-us/equipment-products/?$ https://www.ashokhealthcare.in/equipment-products/ [R=301,L,NE,QSD]
+
+  # Recover root-relative navigation links that were emitted relative to /blog/.
+  RewriteRule ^blog/(gallery|careers|contact)/?$ https://www.ashokhealthcare.in/$1/ [R=301,L,NE,QSD]
+  RewriteRule ^(.+)/index/?$ https://www.ashokhealthcare.in/$1/ [R=301,L,NE,QSD]
+
+  # Redirect stale Blog asset URLs to the shared root asset directory.
+  RewriteRule ^blog/assets/(.+)$ https://www.ashokhealthcare.in/assets/$1 [R=301,L,NE]
+
   # Canonicalize protocol and host for every request, including assets.
   RewriteCond %{HTTPS} !=on [OR]
   RewriteCond %{HTTP_HOST} !^www\.ashokhealthcare\.in$ [NC]
@@ -48,15 +63,12 @@ Options -Indexes -MultiViews
   RewriteCond %{REQUEST_URI} !^/404\.html$ [NC]
   RewriteCond %{REQUEST_URI} !^/googleIQEcN6fdR2LLBfCbLQ7fGA11EOqXO-aLsVHllsr42Q0\.html$ [NC]
   RewriteRule ^(.+)\.html$ /$1/ [R=301,L,NE]
+
 </IfModule>
 
 # 5. SEO ROUTING & LEGACY REQUEST HANDLING
 <IfModule mod_rewrite.c>
   RewriteEngine On
-
-  # Block dotfiles and the external, non-deployable removal archive.
-  RewriteRule (^|/)\. - [F,L]
-  RewriteRule ^_removed_backup(?:/|$) - [F,L]
 
   # Resolve media and scripts referenced relatively by the protected gallery files.
   RewriteRule ^gallery/assets/(.+)$ /assets/$1 [L,NC]
@@ -112,7 +124,7 @@ Options -Indexes -MultiViews
 </IfModule>
 
 # 8. BLOCK ACCESS TO INTERNAL & SENSITIVE FILES
-<FilesMatch "^(\.git|\.env.*|\.cpanel\.yml|\.gitignore|README\.md|SEO-AUDIT-REPORT\.md|SEO-CHANGELOG\.md|SEO-REMOVED-FILES\.md|DEPLOYMENT\.md)$">
+<FilesMatch "^(\.git|\.env.*|\.cpanel\.yml|\.gitignore|README\.md|SEO-AUDIT-REPORT\.md|SEO-CHANGELOG\.md|SEO-REMOVED-FILES\.md|DEPLOYMENT\.md|INTERNAL_AUDIT\.md|CHANGELOG\.md|RESPONSIVE_REPORT\.md|DEPLOY_CHECKLIST\.md|REMOVED_LIST\.md|TEST_REPORT\.md|sitemap_validation_report\.json)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>

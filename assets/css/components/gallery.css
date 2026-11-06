@@ -633,10 +633,12 @@
 
   .media-type-btn {
     flex: 1;
+    min-width: 0;
     padding: 0.5rem 0.35rem;
     font-size: 0.78rem;
     justify-content: center;
     gap: 0.25rem;
+    white-space: normal;
   }
 
   .media-type-btn .count-badge {
@@ -671,4 +673,3 @@
     justify-content: center;
   }
 }
-

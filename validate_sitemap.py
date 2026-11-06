@@ -30,7 +30,7 @@ import urllib.request
 import urllib.error
 import ssl
 
-DOMAIN = "https://ashokhealthcare.in"
+DOMAIN = "https://www.ashokhealthcare.in"
 SITEMAP_FILE = "sitemap.xml"
 ROBOTS_FILE = "robots.txt"
 HTACCESS_FILE = ".htaccess"
@@ -82,7 +82,12 @@ def parse_htaccess(path=HTACCESS_FILE):
                 src_pattern = m_redir.group(1)
                 dest = m_redir.group(2)
                 # Ignore global domain redirects like ^(.*)$ and index.html to canonical root
-                if '(.*)' in src_pattern or 'index\\.html' in src_pattern or 'index.html' in dest:
+                if (
+                    '(.*)' in src_pattern
+                    or 'index\\.html' in src_pattern
+                    or 'index.html' in dest
+                    or '%{REQUEST_URI}' in dest
+                ):
                     continue
                 try:
                     compiled = re.compile(f"^{src_pattern}")
@@ -261,7 +266,7 @@ def validate_sitemap(live_test=False):
         if p['has_noindex']:
             excluded_repo_files[f] = f"noindex directive ({p['robots']})"
             continue
-        if f == 'sitemap.html':
+        if f.replace('\\', '/') in ('sitemap.html', 'sitemap/index.html'):
             excluded_repo_files[f] = "HTML Sitemap directory for users (kept separate from search engine XML sitemap)"
             continue
 
@@ -291,7 +296,8 @@ def validate_sitemap(live_test=False):
     # Check that no excluded file is in sitemap
     for item in sitemap_entries:
         u = item['loc']
-        rel_path = u[len(DOMAIN):].lstrip('/')
+        route_path = u[len(DOMAIN):].lstrip('/')
+        rel_path = route_path
         if not rel_path:
             rel_path = 'index.html'
         elif rel_path.endswith('/'):
@@ -302,8 +308,7 @@ def validate_sitemap(live_test=False):
         
         # Check against Apache 301 redirects
         for compiled, src_pattern, dest in redirects:
-            # If the sitemap path itself matches a redirect rule
-            if compiled.search(rel_path):
+            if route_path and compiled.search(route_path):
                 issues.append(f"Sitemap includes redirecting URL: {u} -> 301 to {dest}")
                 break
 
@@ -363,7 +368,7 @@ def validate_sitemap(live_test=False):
     # 10. HTTP Response Testing
     http_results = []
     if live_test:
-        print("\nRunning live HTTP status verification against https://ashokhealthcare.in/ ...")
+        print(f"\nRunning live HTTP status verification against {DOMAIN}/ ...")
         ctx = ssl.create_default_context()
         opener = urllib.request.build_opener(NoRedirectHandler)
         for item in sitemap_entries:

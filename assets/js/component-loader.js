@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ASHOK HOME HEALTHCARE SERVICES - COMPONENT LOADER
  * Seamlessly loads HTML components (header, footer, modals, floating-actions, care-finder, emergency-banner)
  * Works reliably over HTTP/HTTPS and has zero-CORS in-memory fallback for local file:// usage.
@@ -66,62 +66,62 @@
 
         <nav class="main-navbar">
           <div class="container-max d-flex align-items-center justify-content-between">
-            <a href="{{PREFIX}}index.html" class="d-flex align-items-center text-decoration-none">
+            <a href="/" class="d-flex align-items-center text-decoration-none">
               <img src="{{PREFIX}}assets/images/ashoklogoh-tras.webp" alt="Ashok Home Healthcare Services" class="navbar-logo-img">
             </a>
 
             <!-- Desktop Navigation Links -->
             <div class="d-none d-lg-flex align-items-center gap-1">
-              <a href="{{PREFIX}}index.html" class="nav-item-link" data-nav="home">Home</a>
-              <a href="{{PREFIX}}about.html" class="nav-item-link" data-nav="about">About Us</a>
+              <a href="/" class="nav-item-link" data-nav="home">Home</a>
+              <a href="/about-us/" class="nav-item-link" data-nav="about">About Us</a>
 
               <div class="nav-dropdown">
-                <a href="{{PREFIX}}services.html" class="nav-item-link" data-nav="services">
+                <a href="/services/" class="nav-item-link" data-nav="services">
                   Services
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
                 </a>
                 <div class="mega-menu">
-                  <a href="{{PREFIX}}services/home-nursing.html" class="mega-menu-item">
+                  <a href="/services/home-nursing/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Home Nursing Care</span>
                     <span class="mega-menu-item-desc">Registered GNM &amp; B.Sc nurses (12h/24h)</span>
                   </a>
-                  <a href="{{PREFIX}}services/home-icu.html" class="mega-menu-item">
+                  <a href="/services/home-icu/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Home ICU Setup</span>
                     <span class="mega-menu-item-desc">Ventilators, monitors &amp; critical care</span>
                   </a>
-                  <a href="{{PREFIX}}rehabilitation-neuro-and-ortho.html" class="mega-menu-item">
+                  <a href="/rehabilitation-neuro-and-ortho/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Neuro &amp; Ortho Rehab</span>
                     <span class="mega-menu-item-desc">Stroke, spinal cord &amp; trauma recovery</span>
                   </a>
-                  <a href="{{PREFIX}}physiotherapy.html" class="mega-menu-item">
+                  <a href="/physiotherapy/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Physiotherapy at Home</span>
                     <span class="mega-menu-item-desc">Post-surgery mobility &amp; pain relief</span>
                   </a>
-                  <a href="{{PREFIX}}services/elder-care.html" class="mega-menu-item">
+                  <a href="/services/elder-care/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Elder Care &amp; Support</span>
                     <span class="mega-menu-item-desc">Senior care &amp; medication assistance</span>
                   </a>
-                  <a href="{{PREFIX}}palliative-care-bangalore.html" class="mega-menu-item">
+                  <a href="/palliative-care-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Palliative &amp; Hospice Care</span>
                     <span class="mega-menu-item-desc">Compassionate symptom &amp; pain relief</span>
                   </a>
-                  <a href="{{PREFIX}}diagnostics.html" class="mega-menu-item">
+                  <a href="/diagnostics/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Diagnostic Lab Tests</span>
                     <span class="mega-menu-item-desc">Doorstep blood &amp; sample collection</span>
                   </a>
-                  <a href="{{PREFIX}}ambulance-services.html" class="mega-menu-item">
+                  <a href="/ambulance-services/" class="mega-menu-item">
                     <span class="mega-menu-item-title">24/7 ALS Ambulance</span>
                     <span class="mega-menu-item-desc">Advanced life support patient transport</span>
                   </a>
-                  <a href="{{PREFIX}}rehabilitation-centre-in-bangalore.html" class="mega-menu-item">
+                  <a href="/rehabilitation-centre-in-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Rehabilitation Centre</span>
                     <span class="mega-menu-item-desc">In-patient &amp; outpatient recovery</span>
                   </a>
-                  <a href="{{PREFIX}}nri-parents-care-monitoring-bangalore.html" class="mega-menu-item">
+                  <a href="/nri-parents-care-monitoring-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">NRI Parents Healthcare</span>
                     <span class="mega-menu-item-desc">Dedicated clinical monitoring visits</span>
                   </a>
-                  <a href="{{PREFIX}}home-nursing-healthcare-services-bangalore.html" class="mega-menu-item">
+                  <a href="/home-nursing-healthcare-services-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Clinical Nursing Services</span>
                     <span class="mega-menu-item-desc">Complete home healthcare solutions</span>
                   </a>
@@ -138,31 +138,31 @@
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
                 </a>
                 <div class="mega-menu">
-                  <a href="{{PREFIX}}oxygen-concentrator-rental-bangalore.html" class="mega-menu-item">
+                  <a href="/oxygen-concentrator-rental-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Oxygen Concentrators</span>
                     <span class="mega-menu-item-desc">5L &amp; 10L medical-grade rental &amp; sales</span>
                   </a>
-                  <a href="{{PREFIX}}bipap-cpap-machine-rental-bangalore.html" class="mega-menu-item">
+                  <a href="/bipap-cpap-machine-rental-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">BiPAP &amp; CPAP Machines</span>
                     <span class="mega-menu-item-desc">Philips &amp; ResMed for COPD &amp; sleep apnea</span>
                   </a>
-                  <a href="{{PREFIX}}hospital-bed-rental-bangalore.html" class="mega-menu-item">
+                  <a href="/hospital-bed-rental-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">ICU Hospital Beds</span>
                     <span class="mega-menu-item-desc">Motorized &amp; semi-fowler hospital beds</span>
                   </a>
-                  <a href="{{PREFIX}}patient-monitor-rental-bangalore.html" class="mega-menu-item">
+                  <a href="/patient-monitor-rental-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Multipara Patient Monitors</span>
                     <span class="mega-menu-item-desc">5-para ICU vital signs monitoring</span>
                   </a>
-                  <a href="{{PREFIX}}wheelchair-rental-bangalore.html" class="mega-menu-item">
+                  <a href="/wheelchair-rental-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Wheelchair Rental</span>
                     <span class="mega-menu-item-desc">Motorized &amp; foldable manual wheelchairs</span>
                   </a>
-                  <a href="{{PREFIX}}suction-machine-rental-bangalore.html" class="mega-menu-item">
+                  <a href="/suction-machine-rental-bangalore/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Suction Machines</span>
                     <span class="mega-menu-item-desc">Electrical mucus &amp; phlegm extractors</span>
                   </a>
-                  <a href="{{PREFIX}}medical-equipment-rent-and-sales.html" class="mega-menu-item">
+                  <a href="/medical-equipment-rent-and-sales/" class="mega-menu-item">
                     <span class="mega-menu-item-title">Medical Equipment Hub</span>
                     <span class="mega-menu-item-desc">Complete equipment rental directory</span>
                   </a>
@@ -203,7 +203,7 @@
         <div class="container-max">
           <div class="row g-4 g-lg-5 mb-5">
             <div class="col-lg-4">
-              <a href="{{PREFIX}}index.html" class="d-inline-block mb-3">
+              <a href="/" class="d-inline-block mb-3">
                 <img src="{{PREFIX}}assets/images/ashoklogoh-tras.webp" alt="Ashok Home Healthcare Services" style="height: 48px; filter: brightness(0) invert(1);">
               </a>
               <p class="text-slate-400 small mb-4">
@@ -228,25 +228,25 @@
             <div class="col-6 col-lg-2">
               <h4 class="text-xs text-uppercase fw-bold text-white mb-3 tracking-wider">Clinical Services</h4>
               <ul class="list-unstyled d-flex flex-column gap-2 small text-slate-400 mb-0">
-                <li><a href="{{PREFIX}}services/home-nursing.html">Home Nursing</a></li>
-                <li><a href="{{PREFIX}}services/home-icu.html">Home ICU Setup</a></li>
-                <li><a href="{{PREFIX}}rehabilitation-neuro-and-ortho.html">Neuro Rehab</a></li>
-                <li><a href="{{PREFIX}}physiotherapy.html">Physiotherapy</a></li>
-                <li><a href="{{PREFIX}}services/elder-care.html">Elder Care</a></li>
-                <li><a href="{{PREFIX}}diagnostics.html">Diagnostics</a></li>
-                <li><a href="{{PREFIX}}ambulance-services.html">ALS Ambulance</a></li>
+                <li><a href="/services/home-nursing/">Home Nursing</a></li>
+                <li><a href="/services/home-icu/">Home ICU Setup</a></li>
+                <li><a href="/rehabilitation-neuro-and-ortho/">Neuro Rehab</a></li>
+                <li><a href="/physiotherapy/">Physiotherapy</a></li>
+                <li><a href="/services/elder-care/">Elder Care</a></li>
+                <li><a href="/diagnostics/">Diagnostics</a></li>
+                <li><a href="/ambulance-services/">ALS Ambulance</a></li>
               </ul>
             </div>
 
             <div class="col-6 col-lg-3">
               <h4 class="text-xs text-uppercase fw-bold text-white mb-3 tracking-wider">Equipment Rent &amp; Buy</h4>
               <ul class="list-unstyled d-flex flex-column gap-2 small text-slate-400 mb-0">
-                <li><a href="{{PREFIX}}products.html">Oxygen Concentrators (5L/10L)</a></li>
-                <li><a href="{{PREFIX}}products.html">BiPAP &amp; CPAP Machines</a></li>
-                <li><a href="{{PREFIX}}products.html">Portable ICU Ventilators</a></li>
-                <li><a href="{{PREFIX}}products.html">Motorized ICU Hospital Beds</a></li>
-                <li><a href="{{PREFIX}}products.html">Multipara Patient Monitors</a></li>
-                <li><a href="{{PREFIX}}products.html">Motorized Wheelchairs</a></li>
+                <li><a href="/equipment-products/">Oxygen Concentrators (5L/10L)</a></li>
+                <li><a href="/equipment-products/">BiPAP &amp; CPAP Machines</a></li>
+                <li><a href="/equipment-products/">Portable ICU Ventilators</a></li>
+                <li><a href="/equipment-products/">Motorized ICU Hospital Beds</a></li>
+                <li><a href="/equipment-products/">Multipara Patient Monitors</a></li>
+                <li><a href="/equipment-products/">Motorized Wheelchairs</a></li>
               </ul>
             </div>
 
@@ -255,17 +255,17 @@
               <div class="row g-2">
                 <div class="col-6 col-lg-12">
                   <ul class="list-unstyled d-flex flex-column gap-2 small text-slate-400 mb-0">
-                    <li><a href="{{PREFIX}}about.html">About Ashok Healthcare</a></li>
-                    <li><a href="{{PREFIX}}careers.html">Careers &amp; Vacancies</a></li>
-                    <li><a href="{{PREFIX}}blog.html">Healthcare Insights Blog</a></li>
-                    <li><a href="{{PREFIX}}gallery.html">Photo &amp; Video Gallery</a></li>
+                    <li><a href="/about-us/">About Ashok Healthcare</a></li>
+                    <li><a href="/careers/">Careers &amp; Vacancies</a></li>
+                    <li><a href="/blog/">Healthcare Insights Blog</a></li>
+                    <li><a href="/gallery/">Photo &amp; Video Gallery</a></li>
                   </ul>
                 </div>
                 <div class="col-6 col-lg-12">
                   <ul class="list-unstyled d-flex flex-column gap-2 small text-slate-400 mb-0 pt-lg-2">
-                    <li><a href="{{PREFIX}}contact.html">Contact &amp; Dispatch Hub</a></li>
-                    <li><a href="{{PREFIX}}privacy.html">Privacy Policy</a></li>
-                    <li><a href="{{PREFIX}}terms.html">Terms of Service</a></li>
+                    <li><a href="/contact/">Contact &amp; Dispatch Hub</a></li>
+                    <li><a href="/privacy/">Privacy Policy</a></li>
+                    <li><a href="/terms/">Terms of Service</a></li>
                   </ul>
                 </div>
               </div>

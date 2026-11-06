@@ -1,61 +1,45 @@
-# Test Report — Ashok Home Healthcare
+# Test Report - Ashok Home Healthcare
 
-Status: NO-GO for the current static-file requirement as written.
+Date: 2026-11-07
 
-The project is a static HTML/CSS/JS site, but the current canonical URL structure and file layout require a server rewrite layer (Apache/.htaccess or equivalent) to resolve `/gallery/`, `/services/home-nursing/`, and other slash URLs correctly. Plain double-clicking `index.html` or serving from a raw static directory without rewrite rules will fail those route checks.
+## Result
 
-## 1) Inventory
+Local routing, sitemap, and responsive checks passed. Production hosting and live indexing have not been tested.
 
-- Pages on disk: 42 HTML files.
-- Sitemap URLs: 32 canonical URLs.
-- Orphan pages / missing pages: no hard mismatch between the main static pages and the sitemap under the current repo layout, but the route-style URLs are not physically present as directories; they are served through rewrite rules (`.htaccess`) and therefore cannot be opened directly by file:// without host rewrites.
-- Temporary Node artifacts found and removed: `node_modules`, `package.json`, `package-lock.json`, `tests/`.
+## Sitemap and metadata
 
-## 2) Evidence from local checks
+- `python validate_sitemap.py`: passed all 11 checks.
+- 38 unique canonical sitemap URLs; all 38 have matching files and self-referencing canonical tags.
+- All 38 sitemap URLs returned HTTP 200 on the temporary local Apache vhost.
+- XML and HTML sitemap page URL sets match exactly.
+- Canonical/OG URLs match; titles and descriptions are unique; one H1 per page.
+- All 45 JSON-LD blocks parsed successfully.
 
-### Route checks (local static Python server)
+## Apache routing
 
-Command run:
+- Apache 2.4.58 config syntax: `Syntax OK`.
+- All 37 archived `.html` aliases returned HTTP 301 to their canonical URLs.
+- HTTPS/www redirects, query-string cleanup, obsolete verification and sitemap aliases passed.
+- Google verification file returned HTTP 200 with the requested token.
+- Gallery asset fallback returned HTTP 200.
+- Dotfiles, the removal archive path, and internal reports were denied; an unknown route returned the custom HTTP 404.
 
-```bash
-curl.exe -I http://localhost:4173/
-curl.exe -I http://localhost:4173/gallery/
-curl.exe -I http://localhost:4173/services/home-nursing/
-```
+## Static links and protected files
 
-Observed output:
+- No unresolved internal links or local assets were found on the 38 canonical pages.
+- New-tab links include `noreferrer`.
+- Footer logos use the original logo image on all canonical pages.
+- SHA-256 comparison passed for all 166 protected files in `gallery/`, `assets/gallery/`, and `assets/images/`.
+- The one empty-alt lightbox image and relative gallery links are protected-gallery exceptions; gallery HTML was not edited.
+- Header/footer link-set variations remain documented in `INTERNAL_AUDIT.md`; they were retained to avoid unapproved visual navigation changes.
 
-- `http://localhost:4173/` -> `HTTP/1.0 200 OK`
-- `http://localhost:4173/gallery/` -> `HTTP/1.0 404 File not found`
-- `http://localhost:4173/services/home-nursing/` -> `HTTP/1.0 404 File not found`
+## Responsive QA
 
-This confirms the route-style URLs need server-side rewrite logic to resolve. The repo currently relies on `/.htaccess` for this behavior; a raw static folder without hosting rewrite rules cannot satisfy the address-bar checks for trailing-slash canonical pages.
+- 38 pages x 12 viewports/orientations = 456 checks; all passed.
+- No overflow, non-200 page responses, missing viewport metadata, H1-count failures, JavaScript/console errors, or failed local requests.
+- Mobile navigation open/close behavior passed.
+- Six before/after screenshots cover contact mobile, blog landscape, and gallery mobile. They are representative, not a complete historical screenshot baseline.
 
-### Project cleanup check
+## Limitations
 
-A temporary Playwright install produced `node_modules` and other project artifacts. Those were removed to keep the project in the required static-file form.
-
-## 3) File/line issues found
-
-- [.htaccess](C:/Users/ratho/OneDrive/Documents/client%20projects/OCT%202026/ashok/Ashok_Healthcare-main%20(0.2)/Ashok_Healthcare-main/.htaccess): rewrite rules are required for slash URLs and redirect logic. Without this config, route-style pages 404.
-- [index.html](C:/Users/ratho/OneDrive/Documents/client%20projects/OCT%202026/ashok/Ashok_Healthcare-main%20(0.2)/Ashok_Healthcare-main/index.html): root-relative URLs (`/assets/...`) and canonical URLs are valid only when served from the live host; they are not file://-safe and fail local open-by-file requirements.
-- [gallery.html](C:/Users/ratho/OneDrive/Documents/client%20projects/OCT%202026/ashok/Ashok_Healthcare-main%20(0.2)/Ashok_Healthcare-main/gallery.html): gallery route depends on the host creating /gallery/ as a valid page; plain file semantics do not do that.
-
-## 4) What was fixed without changing visuals
-
-- Removed temporary Node tooling artifacts to restore a pure static deployable project.
-- Preserved the canonical and rewrite logic in [.htaccess](C:/Users/ratho/OneDrive/Documents/client%20projects/OCT%202026/ashok/Ashok_Healthcare-main%20(0.2)/Ashok_Healthcare-main/.htaccess) rather than changing design or content.
-- Kept the project in a static HTML/CSS/JS form, with no build step.
-
-## 5) What still needs a decision or host support
-
-- Final domain and `www` vs non-`www` choice: the repo currently assumes `https://www.ashokhealthcare.in`.
-- Whether the site must run as a true file://-navigable static bundle or as a host-rewritten static site.
-- The route-style `/gallery/`, `/services/.../`, `/blog/.../` URLs require server rewrites or an equivalent static host rule set.
-- Content choices such as delivery-time wording (3h vs 3–4h vs 1–2h vs 2–4h), FAQ duplication, and `.com` vs `.in` email usage require human approval before any text change.
-
-## 6) Final verdict
-
-The site is not yet ready to satisfy the strict “double-click file://, no local server, no Node, no rewrites” requirement. It can be production-ready only when deployed on a host that supports the canonical URL rewrite rules already defined in [.htaccess](C:/Users/ratho/OneDrive/Documents/client%20projects/OCT%202026/ashok/Ashok_Healthcare-main%20(0.2)/Ashok_Healthcare-main/.htaccess).
-
-The repo is now kept in a clean static-only form, but the live route behavior still depends on the production hosting layer, not on browser file browsing alone.
+All checks were local. Live deployment, Search Console verification, and search-engine indexing remain unverified.

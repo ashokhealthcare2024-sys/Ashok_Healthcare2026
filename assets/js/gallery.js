@@ -7,40 +7,34 @@
 (function () {
   'use strict';
 
-  function getAssetBasePath() {
-    const pathname = window.location.pathname || '/';
-    const normalized = pathname.replace(/index\.html$/i, '').replace(/\.html$/i, '').replace(/\/+$/, '');
-    const hasRootPath = normalized === '' || normalized === '/';
-    const depth = hasRootPath ? 0 : normalized.split('/').filter(Boolean).length;
-    return depth === 0 ? './' : Array(depth).fill('../').join('');
-  }
-
-  const pathPrefix = getAssetBasePath();
-  const FALLBACK_MEDIA_SRC = `${pathPrefix}assets/images/ashoklogoh-tras.webp`;
+  const galleryScriptUrl = document.currentScript && document.currentScript.src;
+  const siteRootUrl = new URL('../../', galleryScriptUrl || document.baseURI);
+  const FALLBACK_MEDIA_SRC = new URL('assets/images/ashoklogoh-tras.webp', siteRootUrl).href;
 
   function toSafeUrlPath(value) {
     if (!value) return '';
     const trimmed = String(value).trim();
     if (!trimmed) return '';
 
-    const cleaned = trimmed.replace(/^\.\//, '').replace(/^\//, '').replace(/\\/g, '/');
+    const cleaned = trimmed.replace(/\\/g, '/').replace(/^\/+/, '');
     if (!cleaned) return '';
 
-    return `${pathPrefix}${cleaned
+    const encodedPath = cleaned
       .split('/')
       .filter(Boolean)
       .map(segment => encodeURIComponent(decodeURIComponent(segment)))
-      .join('/')}`;
+      .join('/');
+    return new URL(encodedPath, siteRootUrl).href;
   }
 
   function resolveMediaUrl(src) {
     if (!src) return FALLBACK_MEDIA_SRC;
     const trimmed = String(src).trim();
 
-    if (/^https?:\/\//i.test(trimmed)) return trimmed;
-    if (trimmed.startsWith('/')) return `${pathPrefix}${trimmed.replace(/^\/+/, '')}`;
-    if (trimmed.startsWith('../') || trimmed.startsWith('./')) return trimmed;
-    if (trimmed.startsWith('assets/')) return `${pathPrefix}${trimmed}`;
+    if (/^(?:https?:|blob:|data:)/i.test(trimmed)) return trimmed;
+    if (trimmed.startsWith('../') || trimmed.startsWith('./')) {
+      return new URL(trimmed, window.location.href).href;
+    }
 
     return toSafeUrlPath(trimmed) || FALLBACK_MEDIA_SRC;
   }
@@ -56,7 +50,6 @@
     if (target.tagName === 'VIDEO') {
       target.onerror = null;
       target.pause();
-      target.src = FALLBACK_MEDIA_SRC;
       target.poster = FALLBACK_MEDIA_SRC;
     }
   }
@@ -1397,7 +1390,7 @@
               ${isVideo ? '🎥 Video' : '📷 Photo'}
             </span>
             ${isVideo ? `
-              <video src="${encodedSrc}#t=0.5" preload="metadata" muted playsinline controls aria-hidden="true" poster="${FALLBACK_MEDIA_SRC}" onerror="this.onerror=null;this.src='${FALLBACK_MEDIA_SRC}';this.poster='${FALLBACK_MEDIA_SRC}';"></video>
+              <video src="${encodedSrc}#t=0.5" preload="metadata" muted playsinline controls aria-hidden="true" poster="${FALLBACK_MEDIA_SRC}" onerror="this.onerror=null;this.poster='${FALLBACK_MEDIA_SRC}';"></video>
               <div class="gallery-play-overlay">
                 <div class="play-circle-btn" title="Watch Video">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>

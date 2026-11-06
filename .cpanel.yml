@@ -11,7 +11,7 @@ deployment:
     - export DEPLOYPATH=${DEPLOYPATH:-$HOME/public_html/}
     - /bin/mkdir -p "$DEPLOYPATH"
 
-    # 2. DEPLOY EVERY ROOT HTML PAGE, INCLUDING LEGACY REDIRECTS
+    # 2. DEPLOY ROOT HTML PAGES, INCLUDING THE 404 AND VERIFICATION FILES
     - for FILE in ./*.html; do [ -f "$FILE" ] || continue; /bin/cp -f "$FILE" "$DEPLOYPATH"; done
 
     # 3. DEPLOY APACHE & SEARCH ENGINE CONFIGURATIONS
@@ -23,7 +23,7 @@ deployment:
     - if test -f rss.xml; then /bin/cp -f rss.xml "$DEPLOYPATH"; fi
 
     # 5. DEPLOY ALL PAGE AND ASSET DIRECTORIES
-    - for DIR in */; do [ -d "$DIR" ] || continue; /bin/cp -R -f "$DIR" "$DEPLOYPATH"; done
+    - for DIR in */; do [ -d "$DIR" ] || continue; [ "$DIR" = "qa-screenshots/" ] && continue; /bin/cp -R -f "$DIR" "$DEPLOYPATH"; done
 
     # 6. SET DIRECTORY PERMISSIONS
     - /bin/find "$DEPLOYPATH" -type d -exec /bin/chmod 755 {} + 2>/dev/null || true
