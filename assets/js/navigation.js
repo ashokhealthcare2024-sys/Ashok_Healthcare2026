@@ -35,26 +35,8 @@
     initAll();
   }
 
-  /**
-   * Ensures a responsive offcanvas mobile drawer exists in DOM with correct subfolder prefixes
-   */
-  function getRelativePathPrefix(pathname) {
-    const normalized = (pathname || '/').replace(/\\/g, '/');
-    const withoutIndex = normalized.replace(/index\.html$/i, '').replace(/\.html$/i, '');
-    const trimmed = withoutIndex.replace(/\/+$/, '');
-    if (!trimmed || trimmed === '/') return '';
-
-    const segments = trimmed.split('/').filter(Boolean);
-    if (segments.length === 1 && segments[0].includes('.')) return '';
-
-    return '../'.repeat(segments.length);
-  }
-
   function ensureMobileDrawer() {
     if (document.getElementById('mobileDrawer')) return;
-
-    const pathname = window.location.pathname.toLowerCase();
-    const prefix = getRelativePathPrefix(pathname);
 
     // Backdrop
     let backdrop = document.getElementById('drawerBackdrop');
@@ -77,8 +59,8 @@
 
     drawer.innerHTML = `
       <div class="d-flex align-items-center justify-content-between pb-3 border-bottom mb-3 flex-shrink-0">
-        <a href="${prefix}" class="d-flex align-items-center text-decoration-none">
-          <img src="${prefix}assets/images/ashoklogoh-tras.webp" alt="Ashok Home Healthcare Services" style="height: 38px; width: auto; max-width: 200px; object-fit: contain;">
+        <a href="/" class="d-flex align-items-center text-decoration-none">
+          <img src="/assets/images/ashoklogoh-tras.webp" alt="Ashok Home Healthcare Services" style="height: 38px; width: auto; max-width: 200px; object-fit: contain;">
         </a>
         <button type="button" id="closeMobileDrawer" class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;" aria-label="Close menu">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -86,8 +68,8 @@
       </div>
 
       <div class="d-flex flex-column gap-1.5 mb-4 overflow-y-auto flex-grow-1" style="scrollbar-width: thin;">
-        <a href="${prefix}" class="mobile-nav-item" data-nav="home">Home</a>
-        <a href="${prefix}about-us/" class="mobile-nav-item" data-nav="about">About Us</a>
+        <a href="/" class="mobile-nav-item" data-nav="home">Home</a>
+        <a href="/about-us/" class="mobile-nav-item" data-nav="about">About Us</a>
         
         <div class="mobile-nav-group my-1">
           <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-light mobile-services-toggle" style="cursor: pointer;" role="button" tabindex="0" aria-expanded="false" aria-controls="mobileServicesList" onclick="toggleMobileServicesMenu(event)">
@@ -97,18 +79,18 @@
             </span>
           </div>
           <div id="mobileServicesList" class="mobile-services-list ps-3 flex-column gap-1 border-start border-2 border-primary-200 ms-2 mt-2">
-            <a href="${prefix}services/home-nursing/" class="mobile-nav-subitem">Home Nursing Care</a>
-            <a href="${prefix}services/home-icu/" class="mobile-nav-subitem">Home ICU Setup</a>
+            <a href="/services/home-nursing/" class="mobile-nav-subitem">Home Nursing Care</a>
+            <a href="/services/home-icu/" class="mobile-nav-subitem">Home ICU Setup</a>
             
             
-            <a href="${prefix}services/elder-care/" class="mobile-nav-subitem">Elder Care &amp; Support</a>
-            <a href="${prefix}palliative-care-bangalore/" class="mobile-nav-subitem">Palliative &amp; Hospice Care</a>
+            <a href="/services/elder-care/" class="mobile-nav-subitem">Elder Care &amp; Support</a>
+            <a href="/palliative-care-bangalore/" class="mobile-nav-subitem">Palliative &amp; Hospice Care</a>
             
             
-            <a href="${prefix}rehabilitation-centre-in-bangalore/" class="mobile-nav-subitem">Rehabilitation Centre</a>
-            <a href="${prefix}nri-parents-care-monitoring-bangalore/" class="mobile-nav-subitem">NRI Parents Healthcare</a>
-            <a href="${prefix}home-nursing-healthcare-services-bangalore/" class="mobile-nav-subitem">Clinical Nursing Services</a>
-            <a href="${prefix}services/" class="mobile-nav-subitem text-primary fw-bold">Explore All Services →</a>
+            <a href="/rehabilitation-centre-in-bangalore/" class="mobile-nav-subitem">Rehabilitation Centre</a>
+            <a href="/nri-parents-care-monitoring-bangalore/" class="mobile-nav-subitem">NRI Parents Healthcare</a>
+            <a href="/home-nursing-healthcare-services-bangalore/" class="mobile-nav-subitem">Clinical Nursing Services</a>
+            <a href="/services/" class="mobile-nav-subitem text-primary fw-bold">Explore All Services →</a>
           </div>
         </div>
 
@@ -121,14 +103,14 @@
             </span>
           </div>
           <div id="mobileEquipmentList" class="mobile-equipment-list ps-3 flex-column gap-1 border-start border-2 border-primary-200 ms-2 mt-2" style="display: none;">
-            <a href="${prefix}oxygen-concentrator-rental-bangalore/" class="mobile-nav-subitem">Oxygen Concentrators (5L/10L)</a>
-            <a href="${prefix}bipap-cpap-machine-rental-bangalore/" class="mobile-nav-subitem">BiPAP &amp; CPAP Machines</a>
-            <a href="${prefix}hospital-bed-rental-bangalore/" class="mobile-nav-subitem">ICU Hospital Beds</a>
-            <a href="${prefix}patient-monitor-rental-bangalore/" class="mobile-nav-subitem">Multipara Patient Monitors</a>
-            <a href="${prefix}wheelchair-rental-bangalore/" class="mobile-nav-subitem">Motorized &amp; Manual Wheelchairs</a>
-            <a href="${prefix}suction-machine-rental-bangalore/" class="mobile-nav-subitem">Suction Machines on Rent</a>
+            <a href="/oxygen-concentrator-rental-bangalore/" class="mobile-nav-subitem">Oxygen Concentrators (5L/10L)</a>
+            <a href="/bipap-cpap-machine-rental-bangalore/" class="mobile-nav-subitem">BiPAP &amp; CPAP Machines</a>
+            <a href="/hospital-bed-rental-bangalore/" class="mobile-nav-subitem">ICU Hospital Beds</a>
+            <a href="/patient-monitor-rental-bangalore/" class="mobile-nav-subitem">Multipara Patient Monitors</a>
+            <a href="/wheelchair-rental-bangalore/" class="mobile-nav-subitem">Motorized &amp; Manual Wheelchairs</a>
+            <a href="/suction-machine-rental-bangalore/" class="mobile-nav-subitem">Suction Machines on Rent</a>
             
-            <a href="${prefix}equipment-products/" class="mobile-nav-subitem text-primary fw-bold">All Equipment Catalog →</a>
+            <a href="/equipment-products/" class="mobile-nav-subitem text-primary fw-bold">All Equipment Catalog →</a>
           </div>
         </div>
 
@@ -141,18 +123,18 @@
             </span>
           </div>
           <div id="mobileGuidesList" class="mobile-guides-list ps-3 flex-column gap-1 border-start border-2 border-primary-200 ms-2 mt-2" style="display: none;">
-            <a href="${prefix}home-nursing-charges-bangalore/" class="mobile-nav-subitem">Home Nursing Charges Bangalore</a>
-            <a href="${prefix}home-nurse-vs-caregiver-bangalore/" class="mobile-nav-subitem">Nurse vs Caregiver Comparison</a>
-            <a href="${prefix}hospital-discharge-checklist-bangalore/" class="mobile-nav-subitem">Hospital Discharge Checklist</a>
-            <a href="${prefix}home-nursing-healthcare-services-bangalore/" class="mobile-nav-subitem">Complete Home Nursing Services</a>
+            <a href="/home-nursing-charges-bangalore/" class="mobile-nav-subitem">Home Nursing Charges Bangalore</a>
+            <a href="/home-nurse-vs-caregiver-bangalore/" class="mobile-nav-subitem">Nurse vs Caregiver Comparison</a>
+            <a href="/hospital-discharge-checklist-bangalore/" class="mobile-nav-subitem">Hospital Discharge Checklist</a>
+            <a href="/home-nursing-healthcare-services-bangalore/" class="mobile-nav-subitem">Complete Home Nursing Services</a>
           </div>
         </div>
 
-        <a href="${prefix}equipment-products/" class="mobile-nav-item" data-nav="products">Equipment &amp; Products</a>
-        <a href="${prefix}gallery/" class="mobile-nav-item" data-nav="gallery">Photo &amp; Video Gallery</a>
-        <a href="${prefix}blog/" class="mobile-nav-item" data-nav="blog">Healthcare Blogs</a>
-        <a href="${prefix}careers/" class="mobile-nav-item" data-nav="careers">Careers &amp; Vacancies</a>
-        <a href="${prefix}contact/" class="mobile-nav-item" data-nav="contact">Contact &amp; Hub</a>
+        <a href="/equipment-products/" class="mobile-nav-item" data-nav="products">Equipment &amp; Products</a>
+        <a href="/gallery/" class="mobile-nav-item" data-nav="gallery">Photo &amp; Video Gallery</a>
+        <a href="/blog/" class="mobile-nav-item" data-nav="blog">Healthcare Blogs</a>
+        <a href="/careers/" class="mobile-nav-item" data-nav="careers">Careers &amp; Vacancies</a>
+        <a href="/contact/" class="mobile-nav-item" data-nav="contact">Contact &amp; Hub</a>
       </div>
 
       <div class="pt-3 border-top d-flex flex-column gap-2 mt-auto flex-shrink-0">

@@ -42,6 +42,7 @@ Options -Indexes -MultiViews
   RewriteRule ^about(?:\.html)?/?$ /about-us/ [R=301,L,NE]
   RewriteRule ^(home-nursing|home-icu|elder-care)/?$ /services/$1/ [R=301,L,NE]
   RewriteRule ^bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients/?$ /blog/bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients/ [R=301,L,NE]
+  RewriteRule ^sitemap/sitemap\.xml$ /sitemap.xml [R=301,L,NE]
 
   # Old page-file URLs point directly to their canonical folder URLs.
   RewriteCond %{REQUEST_URI} !^/404\.html$ [NC]
@@ -56,6 +57,9 @@ Options -Indexes -MultiViews
   # Block dotfiles and the external, non-deployable removal archive.
   RewriteRule (^|/)\. - [F,L]
   RewriteRule ^_removed_backup(?:/|$) - [F,L]
+
+  # Resolve media and scripts referenced relatively by the protected gallery files.
+  RewriteRule ^gallery/assets/(.+)$ /assets/$1 [L,NC]
 
   # Media relocation for legacy asset URLs.
   RewriteRule ^images/(.+)$ /assets/images/$1 [R=301,L,NC]
@@ -108,7 +112,7 @@ Options -Indexes -MultiViews
 </IfModule>
 
 # 8. BLOCK ACCESS TO INTERNAL & SENSITIVE FILES
-<FilesMatch "^(\.git|\.env.*|\.cpanel\.yml|\.gitignore|README\.md)$">
+<FilesMatch "^(\.git|\.env.*|\.cpanel\.yml|\.gitignore|README\.md|SEO-AUDIT-REPORT\.md|SEO-CHANGELOG\.md|SEO-REMOVED-FILES\.md|DEPLOYMENT\.md)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
