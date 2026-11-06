@@ -1,10 +1,11 @@
-# ==============================================================================
+# ============================================================================== 
 # ASHOK HOME HEALTHCARE SERVICES - APACHE / CPANEL PRODUCTION CONFIGURATION
-# ==============================================================================
+# ============================================================================== 
 
 # 1. CHARACTER ENCODING
 AddDefaultCharset UTF-8
 AddCharset UTF-8 .html .css .js .json .svg .xml
+AddType text/css .css
 
 # 2. DEFAULT DOCUMENT & CUSTOM ERROR PAGES
 DirectoryIndex index.html
@@ -18,120 +19,71 @@ Options -Indexes -MultiViews
   CheckSpelling Off
 </IfModule>
 
-# 4. HTTPS ENFORCEMENT & CANONICAL DOMAIN (NON-WWW)
+# 4. HTTPS ENFORCEMENT & CANONICAL DOMAIN (WWW)
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Serve the homepage only at the canonical root URL, not /index.html.
-  RewriteRule ^index\.html$ https://ashokhealthcare.in/ [R=301,L]
+  # Prevent asset requests and actual files from being rewritten or redirected.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/assets/ [NC]
+  RewriteCond %{REQUEST_URI} !\.(css|js|webp|mp4|webm|svg|jpg|jpeg|png|gif|woff2?|ttf|eot|ico|xml|json)$ [NC]
 
-  # 4A. Redirect www to non-www (https://ashokhealthcare.in)
-  RewriteCond %{HTTP_HOST} ^www\.ashokhealthcare\.in$ [NC]
-  RewriteRule ^(.*)$ https://ashokhealthcare.in/$1 [L,R=301]
+  # 4A. Redirect all non-WWW/HTTP requests to the preferred canonical domain.
+  RewriteCond %{HTTP_HOST} !^www\.ashokhealthcare\.in$ [NC,OR]
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://www.ashokhealthcare.in%{REQUEST_URI} [R=301,L,NE]
 
-  # 4B. Redirect HTTP to HTTPS
-  RewriteCond %{HTTPS} off
-  RewriteCond %{HTTP:X-Forwarded-Proto} !https
-  RewriteRule ^(.*)$ https://ashokhealthcare.in/$1 [L,R=301]
+  # 4B. Exact legacy root aliases.
+  RewriteRule ^home/?$ / [R=301,L,NE]
+  RewriteRule ^home/index/?$ / [R=301,L,NE]
+  RewriteRule ^home/index\.html$ / [R=301,L,NE]
+  RewriteRule ^index\.html$ / [R=301,L,NE]
+  RewriteRule ^about/?$ /about-us/ [R=301,L,NE]
+  RewriteRule ^about\.html$ /about-us/ [R=301,L,NE]
+
+  # 4C. Exact legacy service URLs: one direct 301 to canonical slash URLs.
+  RewriteRule ^services/home-nursing\.html$ /services/home-nursing/ [R=301,L,NE]
+  RewriteRule ^services/home-nursing$ /services/home-nursing/ [R=301,L,NE]
+  RewriteRule ^services/home-icu\.html$ /services/home-icu/ [R=301,L,NE]
+  RewriteRule ^services/home-icu$ /services/home-icu/ [R=301,L,NE]
+  RewriteRule ^services/elder-care\.html$ /services/elder-care/ [R=301,L,NE]
+  RewriteRule ^services/elder-care$ /services/elder-care/ [R=301,L,NE]
+
+  # 4D. Exact legacy blog URLs: one direct 301 to canonical slash URLs.
+  RewriteRule ^blog/(best-home-healthcare-services-in-bangalore|home-nursing-services-in-bangalore-complete-guide|bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients|home-icu-setup-bangalore|physiotherapy-at-home-after-surgery|elder-care-services-guide)\.html$ /blog/$1/ [R=301,L,NE]
+  RewriteRule ^blog/(best-home-healthcare-services-in-bangalore|home-nursing-services-in-bangalore-complete-guide|bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients|home-icu-setup-bangalore|physiotherapy-at-home-after-surgery|elder-care-services-guide)$ /blog/$1/ [R=301,L,NE]
+
+  # 4E. Legacy .html requests only redirect once to the slash URL. Guarded to avoid loop during internal rewrites.
+  RewriteCond %{ENV:REDIRECT_STATUS} ^$
+  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html(?:\?.*)?\s [NC]
+  RewriteRule ^(.+)\.html$ /$1/ [R=301,L,NE]
+
+  # 4F. Serve canonical slash URLs from their matching HTML files without redirect loops.
+  RewriteRule ^(about-us|equipment-products|gallery|blog|careers|contact|palliative-care-bangalore|rehabilitation-centre-in-bangalore|nri-parents-care-monitoring-bangalore|home-nursing-healthcare-services-bangalore|home-nursing-charges-bangalore|hospital-discharge-checklist-bangalore|home-nurse-vs-caregiver-bangalore|oxygen-concentrator-rental-bangalore|hospital-bed-rental-bangalore|bipap-cpap-machine-rental-bangalore|patient-monitor-rental-bangalore|wheelchair-rental-bangalore|suction-machine-rental-bangalore|privacy|terms)/?$ /$1.html [L,NC]
+  RewriteRule ^services/?$ /services.html [L,NC]
+  RewriteRule ^blog/?$ /blog.html [L,NC]
+  RewriteRule ^services/(home-nursing|home-icu|elder-care)/?$ /services/$1.html [L,NC]
+  RewriteRule ^blog/(best-home-healthcare-services-in-bangalore|home-nursing-services-in-bangalore-complete-guide|bipap-machine-in-yeshwanthpur-expert-home-healthcare-for-sleep-apnea-copd-patients|home-icu-setup-bangalore|physiotherapy-at-home-after-surgery|elder-care-services-guide)/?$ /blog/$1.html [L,NC]
 </IfModule>
 
-# 5. SEO ROUTING, CANONICAL REDIRECTS & EXTENSIONLESS HTML RESOLUTION
+# 5. SEO ROUTING & LEGACY REQUEST HANDLING
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # 5A. Canonical 301 Redirects from Legacy .html URLs to New Page Directories
-  RewriteRule ^about(\.html)?$ /about-us/ [R=301,L,NC]
-  RewriteRule ^about-ashok-healthcare-bangalore\.html$ /about-us/ [R=301,L,NC]
-  RewriteRule ^services\.html$ /services/ [R=301,L,NC]
-  RewriteRule ^products(\.html)?/?$ /equipment-products/ [R=301,L,NC]
-  RewriteRule ^gallery\.html$ /gallery/ [R=301,L,NC]
-  RewriteRule ^blog\.html$ /blog/ [R=301,L,NC]
-  RewriteRule ^careers\.html$ /careers/ [R=301,L,NC]
-  RewriteRule ^contact\.html$ /contact/ [R=301,L,NC]
+  # Canonical URLs are the only valid public URLs. Keep directory-style aliases from being used as primary content paths.
 
-  # Normalize /index.html in subdirectories to canonical trailing slash
-  RewriteRule ^about-us/index\.html$ /about-us/ [R=301,L,NC]
-  RewriteRule ^services/index\.html$ /services/ [R=301,L,NC]
-  RewriteRule ^equipment-products/index\.html$ /equipment-products/ [R=301,L,NC]
-  RewriteRule ^gallery/index\.html$ /gallery/ [R=301,L,NC]
-  RewriteRule ^blog/index\.html$ /blog/ [R=301,L,NC]
-  RewriteRule ^careers/index\.html$ /careers/ [R=301,L,NC]
-  RewriteRule ^contact/index\.html$ /contact/ [R=301,L,NC]
-
-  # Shortcut routes to clinical service pages (with or without .html)
-  RewriteRule ^home-nursing(\.html)?$ /services/home-nursing.html [R=301,L,NC]
-  RewriteRule ^home-icu(\.html)?$ /services/home-icu.html [R=301,L,NC]
-  RewriteRule ^elder-care(\.html)?$ /services/elder-care.html [R=301,L,NC]
-
-  # 5B. Canonical 301 Redirects for Duplicate & Legacy Services Pages
-  RewriteRule ^services/home-healthcare-services-bangalore(\.html)?$ /services/ [R=301,L,NC]
-  RewriteRule ^services/home-healthcare-nursing-services-bangalore(\.html)?$ /services/ [R=301,L,NC]
-
-  RewriteRule ^services/ambulance(-services)?(\.html)?$ /ambulance-services.html [R=301,L,NC]
-  RewriteRule ^services/diagnostics?(-services)?(\.html)?$ /diagnostics.html [R=301,L,NC]
-  RewriteRule ^services/physiotherapy(-at-home)?(\.html)?$ /physiotherapy.html [R=301,L,NC]
-  RewriteRule ^services/rehabilitation(-neuro-and-ortho)?(\.html)?$ /rehabilitation-neuro-and-ortho.html [R=301,L,NC]
-  RewriteRule ^services/medical-equipment-rent-and-sales(\.html)?$ /medical-equipment-rent-and-sales.html [R=301,L,NC]
-
-  # Duplicate directory index documents
-  RewriteRule ^ambulance-services/index\.html$ /ambulance-services.html [R=301,L,NC]
-  RewriteRule ^diagnostics/index\.html$ /diagnostics.html [R=301,L,NC]
-  RewriteRule ^physiotherapy/index\.html$ /physiotherapy.html [R=301,L,NC]
-  RewriteRule ^rehabilitation-neuro-and-ortho/index\.html$ /rehabilitation-neuro-and-ortho.html [R=301,L,NC]
-  RewriteRule ^medical-equipment-rent-and-sales/index\.html$ /medical-equipment-rent-and-sales.html [R=301,L,NC]
-
-  # 5C. Legacy & Alternative Pages
-  RewriteRule ^Hospital-discharge-checklist-bangalore\.html$ /hospital-discharge-checklist-bangalore.html [R=301,L,NC]
-  RewriteRule ^home-nursing-&-healthcare-services-in-bangalore\.htm$ /home-nursing-healthcare-services-bangalore.html [R=301,L,NC,NE]
-
-  # 5D. Prevent Direct Access to Component Snippets (Return 404 Not Found)
-  RewriteRule ^components(/.*)?$ - [R=404,L]
-
-  # 5E. Legacy WordPress & Attack Query String Parameters - Return HTTP 410 Gone
-  # Instantly purges millions of ?p=, ?s=, ?page_id=, ?post_type=, etc.
-  RewriteCond %{QUERY_STRING} (?:^|&)(p|page_id|s|post_type|attachment_id|feed|cat|tag|author|m|replytocom|wordfence_lh)= [NC]
-  RewriteRule ^.*$ - [G,L]
-
-  # 5F. Legacy WordPress Paths, Date Archives & Any PHP Scripts - Return HTTP 410 Gone
-  # The website is 100% static HTML. Zero PHP files exist. All legacy WP endpoints permanently return 410.
-  RewriteRule ^(wp-.*|xmlrpc\.php|wp-content|wp-includes|wp-json|category|tag|author|feed|comments|page/[0-9]+|20[0-9]{2}/[0-9]{2})(/.*)?$ - [G,L]
-  RewriteRule \.php$ - [G,L]
-
-  # 5G. Strip Unwanted Query Parameters & 301 Redirect to Clean Canonical URL
+  # 5A. Strip Unwanted Query Parameters & 301 Redirect to the Same Canonical Path
   # Whitelists legitimate marketing analytics (utm_*, gclid, fbclid); strips all bot/spam parameters
   RewriteCond %{QUERY_STRING} !^$
   RewriteCond %{QUERY_STRING} !(^|&)(utm_[a-z]+|gclid|fbclid)= [NC]
-  RewriteRule ^(.*)$ https://ashokhealthcare.in/$1? [R=301,L]
+  RewriteRule ^(.*)$ https://www.ashokhealthcare.in/$1? [R=301,L]
 
-  # 5H. Extensionless URLs: Seamless resolution without 404
-  # Check if requested filename + .html exists physically on server
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME}\.html -f
-  RewriteRule ^(.+?)/?$ /$1.html [L]
-
-  # Fallback checks using DOCUMENT_ROOT for root and subdirectories
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-  RewriteRule ^([^/]+)/?$ /$1.html [L]
-
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{DOCUMENT_ROOT}/services/$1.html -f
-  RewriteRule ^services/([^/]+)/?$ /services/$1.html [L]
-
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{DOCUMENT_ROOT}/blog/$1.html -f
-  RewriteRule ^blog/([^/]+)/?$ /blog/$1.html [L]
-
-  # 5I. Media Relocation: 301 Redirect legacy /images/ and /Gallery/ requests to /assets/
+  # 5D. Media Relocation: 301 Redirect legacy /images/ and /Gallery/ requests to /assets/
   RewriteRule ^images/(.+)$ /assets/images/$1 [R=301,L,NC]
   RewriteRule ^Gallery/(.+)$ /assets/gallery/$1 [R=301,L,NC]
   RewriteRule ^gallery_([1-3])/(.+)$ /assets/gallery/gallery_$1/$2 [R=301,L,NC]
 </IfModule>
-
 
 # 6. MOBILE PERFORMANCE & BROTLI / DEFLATE COMPRESSION
 <IfModule mod_brotli.c>
@@ -178,7 +130,7 @@ Options -Indexes -MultiViews
 </IfModule>
 
 # 8. BLOCK ACCESS TO INTERNAL & SENSITIVE FILES
-<FilesMatch "^(\.git|\.env.*|\.cpanel\.yml|\.gitignore|README\.md)">
+<FilesMatch "^(\.git|\.env.*|\.cpanel\.yml|\.gitignore|README\.md)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
