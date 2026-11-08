@@ -1,4 +1,4 @@
-# Ashok_Healthcare_2026
+# Ashok_Healthcare2026
 
 Static, responsive website for Ashok Healthcare. It uses HTML, CSS, and vanilla JavaScript, with site assets in `assets/`.
 
