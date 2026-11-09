@@ -1,9 +1,12 @@
 Options -Indexes
 DirectoryIndex index.html
-ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  RewriteRule (^|/)(?:wp-admin|wp-includes|wp-content|wp-json)(?:/|$) - [R=404,L,NC]
+  RewriteRule (^|/)wp-[^/]+\.php$ - [R=404,L,NC]
+  RewriteRule (^|/)xmlrpc\.php$ - [R=404,L,NC]
 
   RewriteCond %{HTTPS} !=on [OR]
   RewriteCond %{HTTP_HOST} !^www\.ashokhealthcare\.in$ [NC]

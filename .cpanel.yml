@@ -1,4 +1,5 @@
 ---
 deployment:
   tasks:
-    - /bin/cp -R .htaccess 404.html index.html assets pages robots.txt sitemap.xml /home/ashokhea/public_html/
+    - /bin/rm -f /home/ashokhea/public_html/404.html
+    - /bin/cp -R .htaccess index.html assets pages robots.txt sitemap.xml /home/ashokhea/public_html/
