@@ -9,10 +9,9 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Careers &amp; Healthcare Team Opportunities | Ashok Healthcare Bangalore</title>
+  <title>Healthcare Careers in Bangalore | Ashok</title>
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <meta name="description"
-    content="Join Ashok Home Healthcare Services in Bangalore. Immediate openings for Caretakers, Patient Attendants, Staff Nurses, ICU Nurses, and Physiotherapists. Apply now!" />
+  <meta name="description" content="Explore nursing, attendant, physiotherapy and biomedical technician jobs at Ashok Healthcare in Bangalore. Review role details and application information.">
   <link rel="canonical" href="https://www.ashokhealthcare.in/pages/careers/">
 
   <!-- Open Graph -->
@@ -716,9 +715,8 @@
                 <line x1="2" y1="10" x2="22" y2="10" />
               </svg>
             </div>
-            <h3 class="h6 fw-bold text-slate-900 mb-1.5">100% On-Time Salary</h3>
-            <p class="text-slate-600 text-xs mb-0">Disbursed on the 1st of every month without delays, paired with
-              direct bank transfers and overtime bonuses.</p>
+            <h3 class="h6 fw-bold text-slate-900 mb-1.5">Pay terms provided by role</h3>
+            <p class="text-slate-600 text-xs mb-0">Compensation, payment schedule and applicable benefits are shared during the hiring process.</p>
           </div>
         </div>
 
@@ -1010,9 +1008,9 @@
               </svg>
             </span>
             <div>
-              <div class="text-xs text-uppercase fw-bold text-slate-400">Award Winning Care</div>
-              <div class="fs-6 fw-bold text-white mb-0 mt-0.5">Int'l Excellence Award 2026</div>
-              <div class="text-xs text-slate-400">Doorstep clinical leadership recognition</div>
+              <div class="text-xs text-uppercase fw-bold text-slate-400">Local care coordination</div>
+              <div class="fs-6 fw-bold text-white mb-0 mt-0.5">Ashok Healthcare in Bengaluru</div>
+              <div class="text-xs text-slate-400">Home healthcare services in Bengaluru</div>
             </div>
           </div>
         </div>
@@ -1031,7 +1029,7 @@
             <div class="d-flex align-items-start gap-2"><span class="text-primary" aria-hidden="true">&#128205;</span><span>28, Ground Floor, 4th Cross Rd, A. T. Street, Dr. Ambedkar Nagar, Yeshwanthpur, Bengaluru 560022</span></div>
             <div class="d-flex align-items-center gap-2"><span class="text-primary" aria-hidden="true">&#9993;</span><a href="mailto:contact@ashokhealthcare.com" class="text-slate-300 text-decoration-none">contact@ashokhealthcare.com</a></div>
             <div class="d-flex align-items-center gap-2"><span class="text-success" aria-hidden="true">&#128336;</span><span>24 hours a day, 7 days a week</span></div>
-          </address>
+          <div class="d-flex align-items-center gap-2"><a href="tel:+917829753538" class="text-slate-300 text-decoration-none">+91 78297 53538</a></div></address>
         </div>
         <nav class="col-12 col-lg-8" aria-label="Footer navigation">
           <div class="row g-4">
@@ -1046,9 +1044,10 @@
             <div class="col-6 col-lg-4">
               <h2 class="h6 text-uppercase fw-bold text-white mb-3 tracking-wider">Care Services</h2>
               <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
-                <li><a href="/pages/services/">Home Healthcare Services</a></li>
-                <li><a href="/pages/services/">Home Nursing &amp; ICU Support</a></li>
-                <li><a href="/pages/services/">Rehabilitation &amp; Equipment</a></li>
+                <li><a href="/pages/services/service_content/home-nursing-bangalore/">Home Nursing</a></li>
+                <li><a href="/pages/services/service_content/home-icu-setup-bangalore/">Home ICU Setup</a></li>
+                <li><a href="/pages/services/service_content/physiotherapy-at-home-bangalore/">Physiotherapy at Home</a></li>
+                <li><a href="/pages/product/equipment-content/medical-equipment-rental-sales/">Medical Equipment Rental</a></li>
                 <li><a href="/pages/blog/">Health Guides</a></li>
               </ul>
             </div>
@@ -1187,7 +1186,7 @@
           var exp = document.getElementById('directApplicantExp').value;
           var shift = document.getElementById('directApplicantShift').value;
           var loc = document.getElementById('directApplicantLocality').value.trim();
-          var skills = document.getElementById('directApplicantSkills') ? document.getElementById('directApplicantSkills').value.trim() : '';
+          var skills = document.getElementById('directApplicantSkills') | document.getElementById('directApplicantSkills').value.trim() : '';
 
           if (!phone || phone.length < 10) {
             alert('Please enter a valid 10-digit contact number.');
@@ -1202,7 +1201,7 @@
             '• Experience: ' + exp + '\n' +
             '• Preferred Shift: ' + shift + '\n' +
             '• Locality in Bengaluru: ' + (loc || 'Bengaluru') +
-            (skills ? ('\n• Clinical Skills: ' + skills) : '') +
+            (skills | ('\n• Clinical Skills: ' + skills) : '') +
             '\n\nKindly schedule my interview / clinical screening at the earliest.';
 
           window.open('https://wa.me/917829753538?text=' + encodeURIComponent(msg), '_blank');
