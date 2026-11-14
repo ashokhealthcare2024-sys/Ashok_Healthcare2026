@@ -8,9 +8,14 @@ DirectoryIndex index.html
   RewriteRule (^|/)wp-[^/]+\.php$ - [R=404,L,NC]
   RewriteRule (^|/)xmlrpc\.php$ - [R=404,L,NC]
 
+  RewriteRule ^(?:sitemap_index\.xml|wp-sitemap[^/]*\.xml|[^/]*-sitemap[^/]*\.xml)$ - [G,L,NC]
+
   RewriteCond %{HTTPS} !=on [OR]
   RewriteCond %{HTTP_HOST} !^www\.ashokhealthcare\.in$ [NC]
   RewriteRule ^ https://www.ashokhealthcare.in%{REQUEST_URI} [R=301,L,NE]
+
+  RewriteCond %{THE_REQUEST} \s/+index\.php(?:[\s?]) [NC]
+  RewriteRule ^index\.php$ / [R=301,L]
 
   RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html(?:[\s?]) [NC]
   RewriteRule ^(.*/)?index\.html$ /$1 [R=301,L]
@@ -26,8 +31,10 @@ DirectoryIndex index.html
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
   ExpiresByType text/javascript "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
   ExpiresByType image/webp "access plus 1 month"
   ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 month"
   ExpiresByType font/woff2 "access plus 1 month"
 </IfModule>
 

@@ -2,4 +2,4 @@
 deployment:
   tasks:
     - /bin/rm -f /home/ashokhea/public_html/404.html
-    - /bin/cp -R .htaccess index.html assets pages robots.txt sitemap.xml /home/ashokhea/public_html/
+    - /bin/cp -R .htaccess favicon.ico index.html assets pages robots.txt sitemap.xml /home/ashokhea/public_html/
